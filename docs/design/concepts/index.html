@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SG Car Buddy · Design concepts (round 1)</title>
+<link rel="stylesheet" href="shared/board.css">
+<style>
+.wrap { max-width:1500px; margin:0 auto; padding:0 40px 64px; }
+.cards { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:24px; margin-top:28px; }
+.card { display:flex; flex-direction:column; border:1px solid var(--page-line); border-radius:20px; background:var(--page-card); overflow:hidden; }
+.card .shot { display:block; aspect-ratio:1780/1288; background:#ccc center top / cover; border-bottom:1px solid var(--page-line); }
+.card .shot.dk { display:none; }
+html.page-dark .card .shot.lt { display:none; }
+html.page-dark .card .shot.dk { display:block; }
+.card .body { flex:1; display:flex; flex-direction:column; gap:10px; padding:20px 22px 22px; }
+.card h2 { margin:0; font-size:22px; letter-spacing:-.02em; }
+.card h2 span { color:var(--page-muted); font-weight:600; }
+.card p { margin:0; color:var(--page-muted); }
+.card ul { margin:0; padding-left:18px; color:var(--page-muted); font-size:14px; }
+.card ul li + li { margin-top:4px; }
+.card ul strong { color:var(--page-ink); }
+.card .go { margin-top:auto; align-self:flex-start; display:inline-flex; align-items:center; gap:8px; min-height:40px; padding:0 16px; border-radius:999px; background:var(--page-ink); color:var(--page-bg); text-decoration:none; font-weight:700; font-size:14px; }
+.sw { display:flex; gap:6px; }
+.sw i { width:22px; height:22px; border-radius:6px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.12); }
+h3.sec { margin:48px 0 12px; font-size:20px; letter-spacing:-.01em; }
+.same { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:16px; }
+table.cmp { width:100%; border-collapse:collapse; border:1px solid var(--page-line); border-radius:16px; overflow:hidden; background:var(--page-card); font-size:14.5px; }
+table.cmp th, table.cmp td { padding:12px 16px; border-bottom:1px solid var(--page-line); text-align:left; }
+table.cmp th { font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--page-muted); }
+table.cmp td:first-child { color:var(--page-muted); }
+table.cmp tr:last-child td { border-bottom:0; }
+.rec { margin-top:16px; padding:22px 24px; border-radius:16px; border:1.5px solid var(--page-ink); background:var(--page-card); }
+.rec h2 { margin:0 0 8px; font-size:18px; }
+.rec p { margin:0 0 8px; color:var(--page-muted); }
+.rec p strong { color:var(--page-ink); }
+@media (max-width:1100px) { .cards { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header class="board-head">
+  <div>
+    <div class="eyebrow">SG Car Buddy (working name) · Design concepts · Round 1 · 26 Oct 2026</div>
+    <h1>Three directions, the same four screens</h1>
+    <p class="lede">Each board shows <b>Parking</b>, <b>EV</b>, <b>Roads</b> and <b>Weather</b> in light and dark, at the same place (Teck Whye) with real HDB lots, real LTA camera images and a real NEA radar frame. Pick one direction, or name the parts you want to mix (for example "B's pins with A's list"). We then lock one screen and build the full wireframe from it.</p>
+  </div>
+  <div class="toolbar">
+    <button type="button" data-theme-toggle><span data-theme-label>Show dark theme</span></button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="cards">
+    <article class="card">
+      <a class="shot lt" href="concept-a-kerb.html" style="background-image:url(renders/concept-a-kerb-light.jpg)" aria-label="Open Concept A"></a>
+      <a class="shot dk" href="concept-a-kerb.html?theme=dark" style="background-image:url(renders/concept-a-kerb-dark.jpg)" aria-label="Open Concept A (dark)"></a>
+      <div class="body">
+        <h2>A · Kerb <span>calm and familiar</span></h2>
+        <div class="sw"><i style="background:#1a56db"></i><i style="background:#ffffff"></i><i style="background:#0f1729"></i><i style="background:#0d9a55"></i><i style="background:#d97c00"></i><i style="background:#dc3439"></i></div>
+        <p>Closest to ParkUncle, but cleaner: Google-Maps-like map, white floating controls, one blue accent, standard Material 3 nav.</p>
+        <ul>
+          <li><strong>Pins:</strong> white pills with a coloured P tile and free lots.</li>
+          <li><strong>List:</strong> big lots block (number, "of total", fill bar).</li>
+          <li><strong>Roads:</strong> single-column camera cards, ad card after the 2nd.</li>
+        </ul>
+        <a class="go" href="concept-a-kerb.html">Open board →</a>
+      </div>
+    </article>
+    <article class="card">
+      <a class="shot lt" href="concept-b-gantry.html" style="background-image:url(renders/concept-b-gantry-light.jpg)" aria-label="Open Concept B"></a>
+      <a class="shot dk" href="concept-b-gantry.html?theme=dark" style="background-image:url(renders/concept-b-gantry-dark.jpg)" aria-label="Open Concept B (dark)"></a>
+      <div class="body">
+        <h2>B · Gantry <span>bold and glanceable</span></h2>
+        <div class="sw"><i style="background:#131417"></i><i style="background:#ffc629"></i><i style="background:#f1f0eb"></i><i style="background:#36e07c"></i><i style="background:#ffbe2e"></i><i style="background:#ff5b50"></i></div>
+        <p>Road-sign inspired (original, not LTA's): black plates with a yellow P, tall condensed numerals, a departure board for checkpoint times.</p>
+        <ul>
+          <li><strong>Pins:</strong> black sign plates, number coloured by availability.</li>
+          <li><strong>List:</strong> board rows with a black lots tile.</li>
+          <li><strong>Roads:</strong> 2-column camera wall, all 8 at once, ad row after the first two.</li>
+        </ul>
+        <a class="go" href="concept-b-gantry.html">Open board →</a>
+      </div>
+    </article>
+    <article class="card">
+      <a class="shot lt" href="concept-c-night-drive.html?theme=light" style="background-image:url(renders/concept-c-night-drive-light.jpg)" aria-label="Open Concept C (light)"></a>
+      <a class="shot dk" href="concept-c-night-drive.html" style="background-image:url(renders/concept-c-night-drive-dark.jpg)" aria-label="Open Concept C"></a>
+      <div class="body">
+        <h2>C · Night Drive <span>premium, dark-first</span></h2>
+        <div class="sw"><i style="background:#060a14"></i><i style="background:#4be3ff"></i><i style="background:#8b7bff"></i><i style="background:#2ff59a"></i><i style="background:#ffc94a"></i><i style="background:#ff5c7a"></i></div>
+        <p>Deep-navy map, frosted glass, glowing orbs, a floating sheet and a floating pill nav. A bright light theme is derived from it.</p>
+        <ul>
+          <li><strong>Pins:</strong> glowing orbs; the ring colour is availability.</li>
+          <li><strong>List:</strong> ring gauge (how full) with free lots inside.</li>
+          <li><strong>Roads:</strong> full-width camera stream with frosted captions.</li>
+        </ul>
+        <a class="go" href="concept-c-night-drive.html">Open board →</a>
+      </div>
+    </article>
+  </section>
+
+  <h3 class="sec">The same in all three (from your plan review)</h3>
+  <div class="same">
+    <div class="note"><h2>Tabs and navigation</h2><ul>
+      <li>Tabs renamed <strong>Parking · EV · Roads · Weather</strong>. EV uses a bolt icon, Roads a traffic-camera icon.</li>
+      <li><strong>EV tab can be hidden</strong> in Settings. It is off by default unless your vehicle is electric.</li>
+      <li>One shared map: switching tabs never reloads it, and the place (Near you or a search) carries across.</li>
+    </ul></div>
+    <div class="note"><h2>Roads and ads</h2><ul>
+      <li><strong>All 8 live LTA cameras</strong> (Woodlands ×3, Tuas ×3, Sentosa ×2) with LTA travel times to each checkpoint.</li>
+      <li><strong>One in-feed ad after the 2nd camera</strong>, about the size of a camera image, clearly labelled "Ad".</li>
+      <li>The usual banner at the very bottom of every main screen, like SG BusXing.</li>
+    </ul></div>
+    <div class="note"><h2>Parking, Weather, Parked</h2><ul>
+      <li>Pins show <strong>free lots for your vehicle</strong>; the list shows walk time and est. cost for your stay.</li>
+      <li>Weather is cut to <strong>radar + now + next 2 hours + 4 days</strong>.</li>
+      <li>The <strong>Parked</strong> bar follows you on every tab while you're parked.</li>
+    </ul></div>
+  </div>
+
+  <h3 class="sec">Comparison</h3>
+  <table class="cmp">
+    <tr><th>Criterion</th><th>A · Kerb</th><th>B · Gantry</th><th>C · Night Drive</th></tr>
+    <tr><td>Read lots / price at a glance (sunlight, arm's length)</td><td>★★☆</td><td>★★★</td><td>★★☆</td></tr>
+    <tr><td>Familiar on day one</td><td>★★★</td><td>★★☆</td><td>★★☆</td></tr>
+    <tr><td>Distinctive in the Play Store</td><td>★☆☆</td><td>★★★</td><td>★★★</td></tr>
+    <tr><td>Camera feed (see all 8 quickly)</td><td>★★☆</td><td>★★★</td><td>★★☆</td></tr>
+    <tr><td>Night use / eye comfort</td><td>★★☆</td><td>★★★ (dark)</td><td>★★★</td></tr>
+    <tr><td>Low-end Android performance</td><td>Best</td><td>Best</td><td>Needs a no-blur fallback</td></tr>
+    <tr><td>Accessibility risk</td><td>Low</td><td>Low (keep names in normal case)</td><td>Medium (glow, icon-only tabs)</td></tr>
+    <tr><td>Relative build effort</td><td>1.0×</td><td>1.1×</td><td>1.3×</td></tr>
+  </table>
+
+  <div class="rec">
+    <h2>Recommendation: B · Gantry as the base</h2>
+    <p><strong>Why:</strong> drivers glance at this app in sunlight or in a dim carpark, and B's tall numerals and sign plates are the easiest to read. It is the most ownable look, and its camera wall shows all 8 images with one short scroll.</p>
+    <p><strong>Possible mixes:</strong> keep B's pins, numerals and Roads wall, with A's softer white sheet and rows if B feels too heavy in daytime; or take C's ring gauge for the lots block.</p>
+    <p><strong>Next step:</strong> tell me the direction (or the mix) and the one screen to lock first. I'll then wireframe every screen: search, carpark and charger detail, camera viewer, parked flow, filters, onboarding and settings.</p>
+  </div>
+</div>
+<p class="disclaimer" style="margin-top:0">Visual direction only. Map: © OpenFreeMap, © OpenMapTiles, data © OpenStreetMap contributors. Carpark lots: HDB via data.gov.sg (26 Oct 2026). Camera images: LTA via data.gov.sg (26 Oct 2026, 5:36 pm). Radar: NEA (25 Oct 2026, 5:00 pm). EV, prices, travel times and the parked session are sample data.</p>
+<script src="shared/chrome.js"></script>
+</body>
+</html>

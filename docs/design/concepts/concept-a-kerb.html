@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SG Car Buddy · Concept A · Kerb</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/board.css">
+<style>
+/* ===== Concept A · Kerb tokens (light) ===== */
+.phone {
+  --bg:#f3f5f8; --surface:#ffffff; --surface-2:#eef1f5; --line:#e1e6ec;
+  --ink:#0f1729; --muted:#556175; --faint:#97a1b1;
+  --accent:#1a56db; --accent-ink:#1543b0; --accent-soft:#e7eeff; --on-accent:#fff;
+  --plenty:#0d9a55; --plenty-soft:#e2f5ea; --limited:#d97c00; --limited-soft:#fdf0db;
+  --few:#dc3439; --few-soft:#fde7e7; --none:#97a1b1; --none-soft:#eef1f5;
+  --rain:#2563eb; --rain-soft:#e6efff;
+  --shadow:0 1px 2px rgba(16,24,40,.08), 0 6px 18px rgba(16,24,40,.10);
+  --map-tw:url(assets/maps/tw-liberty.jpg); --map-sg:url(assets/maps/sg-liberty.jpg);
+  --map-fade:rgba(243,245,248,.92);
+  font-family:"Figtree",system-ui,sans-serif; font-size:15px; line-height:1.35;
+}
+html[data-theme=dark] .phone {
+  --bg:#0b0f17; --surface:#151b26; --surface-2:#1d2532; --line:#273142;
+  --ink:#e9eef6; --muted:#9aa6b8; --faint:#5f6c80;
+  --accent:#7aa2ff; --accent-ink:#a8c0ff; --accent-soft:#1a2747; --on-accent:#08132e;
+  --plenty:#3ccf86; --plenty-soft:#10291c; --limited:#f5a524; --limited-soft:#2e2310;
+  --few:#ff6066; --few-soft:#341416; --none:#6b778a; --none-soft:#1d2532;
+  --rain:#7aa2ff; --rain-soft:#16233f;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 22px rgba(0,0,0,.45);
+  --map-tw:url(assets/maps/tw-dark.jpg); --map-sg:url(assets/maps/sg-dark.jpg);
+  --map-fade:rgba(11,15,23,.9);
+}
+:where(.phone button) { border:0; background:none; padding:0; cursor:pointer; font:inherit; color:inherit; text-align:inherit; }
+.phone b, .phone strong { font-weight:750; }
+.num { font-variant-numeric:tabular-nums; }
+
+/* top controls */
+.fade { position:absolute; inset:0 0 auto; height:150px; background:linear-gradient(var(--map-fade), transparent); pointer-events:none; }
+.top { position:absolute; left:12px; right:12px; top:52px; z-index:10; display:flex; flex-direction:column; gap:8px; }
+.search { display:flex; align-items:center; gap:12px; height:50px; padding:0 6px 0 16px; border-radius:25px; background:var(--surface); box-shadow:var(--shadow); color:var(--muted); font-size:16px; }
+.search span { flex:1; }
+.search .ib { display:grid; place-items:center; width:38px; height:38px; border-radius:50%; background:var(--surface-2); color:var(--ink); }
+.chips { display:flex; gap:6px; align-items:center; }
+.chip { display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 12px; border-radius:16px; background:var(--surface); box-shadow:var(--shadow); font-size:13px; font-weight:650; color:var(--ink); white-space:nowrap; }
+.chip.on { background:var(--accent); color:var(--on-accent); }
+.chip .i { width:15px; height:15px; }
+.chip.wx { margin-left:auto; padding:0 10px; }
+.chip.wx .i { color:var(--rain); }
+
+/* map pins */
+.cp { position:absolute; left:var(--x); top:var(--y); transform:translate(-50%, calc(-100% - 7px)); display:flex; align-items:center; gap:5px; height:28px; padding:0 9px 0 4px; border-radius:14px; background:var(--surface); box-shadow:0 1px 2px rgba(0,0,0,.2), 0 4px 10px rgba(0,0,0,.14); font-size:13.5px; font-weight:800; color:var(--ink); white-space:nowrap; font-variant-numeric:tabular-nums; }
+.cp::after { content:""; position:absolute; left:50%; bottom:-6px; margin-left:-6px; border:6px solid transparent; border-bottom:0; border-top-color:var(--surface); }
+.cp .pl { display:grid; place-items:center; width:20px; height:20px; border-radius:7px; background:var(--lvl); color:#fff; font-size:12px; font-weight:850; }
+.cp .pl .i { width:13px; height:13px; }
+.cp.sel { height:34px; padding:0 12px 0 5px; border-radius:17px; background:var(--ink); color:var(--surface); font-size:16px; z-index:3; }
+.cp.sel::after { border-top-color:var(--ink); }
+.cp.sel .pl { width:24px; height:24px; border-radius:8px; }
+.cp.none { color:var(--muted); }
+.dp { position:absolute; left:var(--x); top:var(--y); width:13px; height:13px; margin:-6.5px 0 0 -6.5px; border-radius:50%; background:var(--lvl); box-shadow:0 0 0 2px var(--surface), 0 1px 4px rgba(0,0,0,.3); }
+.plenty { --lvl:var(--plenty); --lvl-soft:var(--plenty-soft); }
+.limited { --lvl:var(--limited); --lvl-soft:var(--limited-soft); }
+.few { --lvl:var(--few); --lvl-soft:var(--few-soft); }
+.none { --lvl:var(--none); --lvl-soft:var(--none-soft); }
+.me { position:absolute; left:var(--x); top:var(--y); width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; background:#2f6bff; box-shadow:0 0 0 3px #fff, 0 0 0 12px rgba(47,107,255,.18), 0 2px 6px rgba(0,0,0,.3); }
+.fab { position:absolute; right:12px; z-index:9; display:grid; place-items:center; width:46px; height:46px; border-radius:50%; background:var(--surface); box-shadow:var(--shadow); color:var(--accent); }
+
+/* bottom sheet */
+.sheet { position:absolute; left:0; right:0; z-index:12; display:flex; flex-direction:column; border-radius:26px 26px 0 0; background:var(--surface); box-shadow:0 -6px 24px rgba(16,24,40,.14); overflow:hidden; }
+.handle { flex:none; width:38px; height:5px; margin:8px auto 4px; border-radius:3px; background:var(--line); }
+.sh-head { flex:none; display:flex; align-items:flex-end; justify-content:space-between; gap:12px; padding:4px 16px 8px; }
+.sh-head h2 { margin:0; font-size:19px; font-weight:800; letter-spacing:-.02em; }
+.sh-head p { margin:2px 0 0; font-size:12.5px; color:var(--muted); display:flex; align-items:center; gap:6px; }
+.live { width:7px; height:7px; border-radius:50%; background:var(--plenty); box-shadow:0 0 0 3px color-mix(in srgb, var(--plenty) 22%, transparent); }
+.ctrls { flex:none; display:flex; gap:6px; padding:0 16px 10px; overflow:hidden; }
+.ctl { display:inline-flex; align-items:center; gap:5px; height:32px; padding:0 11px; border-radius:10px; background:var(--surface-2); font-size:13px; font-weight:650; white-space:nowrap; }
+.ctl .i { width:15px; height:15px; color:var(--muted); }
+.ctl.on { background:var(--accent-soft); color:var(--accent-ink); }
+.ctl.on .i { color:var(--accent-ink); }
+.ctl em { font-style:normal; display:inline-grid; place-items:center; min-width:18px; height:18px; border-radius:9px; background:var(--accent); color:var(--on-accent); font-size:11px; font-weight:800; }
+
+.rows { flex:1; overflow:hidden; margin:0; padding:0; list-style:none; }
+.row { display:grid; grid-template-columns:62px 1fr auto; gap:12px; align-items:center; padding:11px 16px; border-top:1px solid var(--line); }
+.row.sel { background:color-mix(in srgb, var(--accent) 6%, transparent); box-shadow:inset 3px 0 0 var(--accent); }
+.lots { display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 0 7px; border-radius:14px; background:var(--lvl-soft); }
+.lots b { font-size:21px; line-height:1; font-weight:850; letter-spacing:-.02em; color:var(--lvl); font-variant-numeric:tabular-nums; }
+.lots small { font-size:10.5px; font-weight:650; color:var(--muted); }
+.lots .bar { width:38px; height:4px; border-radius:2px; background:color-mix(in srgb, var(--lvl) 22%, transparent); overflow:hidden; }
+.lots .bar i { display:block; height:100%; background:var(--lvl); border-radius:2px; }
+.rt { min-width:0; display:flex; flex-direction:column; gap:3px; }
+.rt > b { font-size:15.5px; line-height:1.25; letter-spacing:-.01em; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.meta { display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--muted); white-space:nowrap; }
+.meta .i { width:14px; height:14px; }
+.facts { display:flex; gap:5px; flex-wrap:nowrap; overflow:hidden; }
+.facts em { display:inline-flex; align-items:center; gap:3px; height:21px; padding:0 7px; border-radius:6px; background:var(--surface-2); font-style:normal; font-size:11.5px; font-weight:650; color:var(--muted); white-space:nowrap; }
+.facts em .i { width:12px; height:12px; }
+.facts em.warn { background:var(--limited-soft); color:var(--limited); }
+.facts em.ev { color:var(--plenty); }
+.cost { text-align:right; display:flex; flex-direction:column; gap:2px; }
+.cost b { font-size:16px; font-weight:800; font-variant-numeric:tabular-nums; }
+.cost small { font-size:11px; color:var(--muted); font-weight:600; }
+
+/* shell: nav + ad */
+.nav { position:absolute; left:0; right:0; bottom:73px; z-index:20; height:64px; display:grid; grid-template-columns:repeat(4,1fr); background:var(--surface); border-top:1px solid var(--line); }
+.nav a { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:var(--muted); text-decoration:none; font-size:12px; font-weight:700; }
+.nav a span { display:grid; place-items:center; width:56px; height:30px; border-radius:15px; }
+.nav a.on { color:var(--ink); }
+.nav a.on span { background:var(--accent-soft); color:var(--accent-ink); }
+.ad { position:absolute; left:0; right:0; bottom:22px; z-index:20; height:50px; display:flex; align-items:center; justify-content:center; gap:10px; background:var(--surface-2); border-top:1px solid var(--line); font-size:12px; color:var(--faint); }
+.ad b, .adl { padding:1px 6px; border-radius:4px; background:var(--surface); box-shadow:0 0 0 1px var(--line); color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.06em; }
+.base { position:absolute; left:0; right:0; bottom:0; height:22px; z-index:19; background:var(--surface-2); }
+
+/* Roads */
+.feed-head { flex:none; display:flex; align-items:center; gap:10px; padding:4px 16px 10px; border-bottom:1px solid var(--line); }
+.feed-head h2 { margin:0; flex:1; font-size:19px; font-weight:800; letter-spacing:-.02em; }
+.feed-head p { margin:2px 0 0; font-size:12.5px; color:var(--muted); display:flex; align-items:center; gap:6px; font-weight:500; }
+.seg { display:inline-flex; padding:3px; border-radius:11px; background:var(--surface-2); }
+.seg button { display:inline-flex; align-items:center; gap:5px; height:30px; padding:0 10px; border-radius:8px; font-size:12.5px; font-weight:700; color:var(--muted); }
+.seg button.on { background:var(--surface); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.12); }
+.sticky { flex:none; display:flex; align-items:center; gap:8px; padding:8px 16px; background:var(--surface); border-bottom:1px solid var(--line); font-size:13px; font-weight:700; }
+.sticky .tt { margin-left:auto; display:inline-flex; align-items:center; gap:5px; height:26px; padding:0 9px; border-radius:8px; background:var(--limited-soft); color:var(--limited); font-weight:800; }
+.feed { flex:1; overflow:hidden; position:relative; }
+.feed-in { position:absolute; left:0; right:0; padding:0 16px; display:flex; flex-direction:column; gap:14px; }
+.cam { border-radius:18px; background:var(--surface); box-shadow:0 0 0 1px var(--line); overflow:hidden; }
+.cam .img { position:relative; aspect-ratio:16/9; background:#222 center / cover; }
+.cam .img .xp { position:absolute; right:8px; top:8px; display:grid; place-items:center; width:32px; height:32px; border-radius:10px; background:rgba(10,14,22,.55); color:#fff; backdrop-filter:blur(6px); }
+.cam .cap { display:flex; align-items:center; gap:10px; padding:10px 12px; }
+.cam .cap b { display:block; font-size:14.5px; }
+.cam .cap small { display:block; font-size:12px; color:var(--muted); }
+.cam .cap .ts { margin-left:auto; display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:650; color:var(--muted); white-space:nowrap; }
+.cam.adcard { box-shadow:0 0 0 1px var(--line); background:var(--surface-2); }
+.cam.adcard .img { display:grid; place-items:center; background:repeating-linear-gradient(135deg, var(--surface-2) 0 14px, var(--surface) 14px 28px); color:var(--muted); text-align:center; font-size:13px; font-weight:600; }
+.cam.adcard .img > div { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.grp { display:flex; align-items:center; gap:8px; padding-top:4px; font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+
+/* Weather */
+.radar { position:absolute; left:-214px; top:-227.7px; width:1090.8px; height:1090.6px; opacity:.62; mix-blend-mode:multiply; pointer-events:none; }
+html[data-theme=dark] .radar { mix-blend-mode:screen; opacity:.75; }
+.rctl { position:absolute; left:12px; right:12px; z-index:11; display:flex; align-items:center; gap:10px; height:52px; padding:0 14px 0 6px; border-radius:26px; background:var(--surface); box-shadow:var(--shadow); }
+.rctl .play { display:grid; place-items:center; width:40px; height:40px; border-radius:50%; background:var(--accent); color:var(--on-accent); }
+.rctl .tl { flex:1; display:flex; flex-direction:column; gap:5px; }
+.rctl .tl b { font-size:13px; display:flex; justify-content:space-between; }
+.rctl .tl b span { color:var(--muted); font-weight:600; }
+.ticks { display:grid; grid-template-columns:repeat(12,1fr); gap:3px; }
+.ticks i { height:5px; border-radius:3px; background:var(--surface-2); }
+.ticks i.p { background:color-mix(in srgb, var(--accent) 45%, transparent); }
+.ticks i.c { background:var(--accent); }
+.legend { position:absolute; right:12px; z-index:11; display:flex; align-items:center; gap:6px; height:26px; padding:0 10px; border-radius:13px; background:var(--surface); box-shadow:var(--shadow); font-size:11px; font-weight:700; color:var(--muted); }
+.legend i { width:70px; height:6px; border-radius:3px; background:linear-gradient(90deg,#7fe3ff,#26c24a,#ffe14a,#ff7a1a,#e01f3d,#b3159a); }
+.wx-now { display:flex; align-items:center; gap:12px; padding:2px 16px 8px; }
+.wx-now .big { display:grid; place-items:center; width:48px; height:48px; border-radius:15px; background:var(--rain-soft); color:var(--rain); flex:none; }
+.wx-now h2 { margin:0; font-size:19px; font-weight:800; letter-spacing:-.02em; }
+.wx-now p { margin:1px 0 0; font-size:12.5px; color:var(--muted); white-space:nowrap; }
+.wx-now .t { margin-left:auto; font-size:26px; font-weight:800; letter-spacing:-.03em; }
+.wx-row { display:flex; align-items:center; gap:12px; margin:0 16px; padding:8px 0; border-top:1px solid var(--line); }
+.wx-row .i { color:var(--rain); }
+.wx-row b { display:block; font-size:14.5px; }
+.wx-row small { display:block; font-size:12px; color:var(--muted); }
+.days { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin:0 16px; padding:8px 0 0; border-top:1px solid var(--line); }
+.days div { display:flex; flex-direction:column; align-items:center; gap:3px; font-size:12px; font-weight:700; }
+.days div .i { color:var(--muted); }
+.days small { font-size:11.5px; color:var(--muted); font-weight:600; font-variant-numeric:tabular-nums; }
+.parked { position:absolute; left:8px; right:8px; bottom:141px; z-index:21; display:flex; align-items:center; gap:10px; height:48px; padding:0 8px 0 6px; border-radius:16px; background:var(--ink); color:var(--surface); box-shadow:var(--shadow); }
+.parked .pi { display:grid; place-items:center; width:36px; height:36px; border-radius:11px; background:var(--accent); color:#fff; font-weight:850; font-size:17px; }
+.parked .tx { flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.2; }
+.parked .tx b { font-size:13.5px; }
+.parked .tx small { font-size:11.5px; opacity:.72; }
+.parked .tm { font-size:17px; font-weight:800; font-variant-numeric:tabular-nums; padding-right:6px; }
+</style>
+</head>
+<body>
+<header class="board-head">
+  <div>
+    <div class="eyebrow">SG Car Buddy · Concept A of 3</div>
+    <h1>Kerb: calm, familiar, map first</h1>
+    <p class="lede">The closest to the ParkUncle layout you liked, with the rough edges fixed. A Google-Maps-like map, white floating controls and one blue accent. Pins show <b>free lots</b> instead of the same "$1.20" everywhere. The list leads with a big lots block, and the bottom nav is standard Material 3. Same place, four lenses: the map never reloads between tabs.</p>
+  </div>
+  <div class="toolbar">
+    <a href="index.html"><svg class="i sm"><use href="#i-left"/></svg>All concepts</a>
+    <button type="button" data-theme-toggle><span data-theme-label>Show dark theme</span></button>
+  </div>
+</header>
+
+<main class="devices">
+
+<!-- ============ 1 · PARKING ============ -->
+<figure class="device">
+  <div class="phone" data-time="5:42">
+    <div class="scr">
+      <div class="map" style="background-image:var(--map-tw)"></div>
+      <div class="fade"></div>
+
+      <!-- carpark pins at real HDB coordinates (Teck Whye) -->
+      <div class="cp plenty" style="--x:38.8px;--y:275.5px"><span class="pl">P</span>393</div>
+      <div class="cp plenty" style="--x:44.2px;--y:334px"><span class="pl">P</span>104</div>
+      <div class="cp limited" style="--x:81.2px;--y:176.2px"><span class="pl">P</span>23</div>
+      <div class="dp limited" style="--x:127.8px;--y:210.2px"></div>
+      <div class="cp plenty" style="--x:130.5px;--y:291.3px"><span class="pl">P</span>188</div>
+      <div class="dp few" style="--x:149.7px;--y:232.6px"></div>
+      <div class="dp none" style="--x:219.4px;--y:230.2px"></div>
+      <div class="dp limited" style="--x:244.8px;--y:193.8px"></div>
+      <div class="cp plenty" style="--x:246.9px;--y:173.8px"><span class="pl">P</span>178</div>
+      <div class="dp none" style="--x:185.1px;--y:165.2px"></div>
+      <div class="cp plenty" style="--x:337px;--y:220.3px"><span class="pl">P</span>124</div>
+      <div class="cp plenty" style="--x:335.1px;--y:324.5px"><span class="pl">P</span>133</div>
+      <div class="cp plenty" style="--x:301.5px;--y:408.6px"><span class="pl">P</span>70</div>
+      <div class="me" style="--x:195px;--y:271.7px"></div>
+      <div class="cp plenty sel" style="--x:169.3px;--y:223.4px"><span class="pl">P</span>236</div>
+
+      <div class="top">
+        <div class="search"><svg class="i"><use href="#i-search"/></svg><span>Where to?</span><button class="ib" aria-label="Settings"><svg class="i"><use href="#i-gear"/></svg></button></div>
+        <div class="chips">
+          <button class="chip on"><svg class="i"><use href="#i-locate"/></svg>Near you · Teck Whye</button>
+          <button class="chip"><svg class="i"><use href="#i-home"/></svg>Home</button>
+          <button class="chip wx"><svg class="i"><use href="#i-rain"/></svg>28°</button>
+        </div>
+      </div>
+      <button class="fab" style="top:356px" aria-label="My location"><svg class="i lg"><use href="#i-locate"/></svg></button>
+
+      <section class="sheet" style="top:418px;bottom:137px">
+        <div class="handle"></div>
+        <div class="sh-head">
+          <div><h2>14 carparks nearby</h2><p><i class="live"></i>Live · updated 1 min ago · within 10 min walk</p></div>
+        </div>
+        <div class="ctrls">
+          <button class="ctl"><svg class="i"><use href="#i-sort"/></svg>Nearest<svg class="i"><use href="#i-down"/></svg></button>
+          <button class="ctl on"><svg class="i"><use href="#i-clock"/></svg>Stay 2 h<svg class="i"><use href="#i-down"/></svg></button>
+          <button class="ctl"><svg class="i"><use href="#i-sliders"/></svg>Filters</button>
+          <button class="ctl"><svg class="i"><use href="#i-roof"/></svg>Covered</button>
+        </div>
+        <ul class="rows">
+          <li class="row sel plenty">
+            <div class="lots"><b>236</b><small>of 298</small><span class="bar"><i style="width:79%"></i></span></div>
+            <div class="rt"><b>Blk 135A Teck Whye Ln</b>
+              <span class="meta">HDB · Multi-storey · <svg class="i"><use href="#i-walk"/></svg>2 min</span>
+              <span class="facts"><em class="ev"><svg class="i fill"><use href="#i-boltf"/></svg>3 chargers</em><em>Night</em><em class="warn"><svg class="i"><use href="#i-height"/></svg>1.8 m</em></span></div>
+            <div class="cost"><b>$2.40</b><small>est. 2 h</small></div>
+          </li>
+          <li class="row plenty">
+            <div class="lots"><b>188</b><small>of 464</small><span class="bar"><i style="width:41%"></i></span></div>
+            <div class="rt"><b>Blk 109/117 Teck Whye Ln</b>
+              <span class="meta">HDB · Surface · <svg class="i"><use href="#i-walk"/></svg>2 min</span>
+              <span class="facts"><em class="ev"><svg class="i fill"><use href="#i-boltf"/></svg>6 chargers</em><em>Night</em><em>Free Sun/PH</em></span></div>
+            <div class="cost"><b>$2.40</b><small>est. 2 h</small></div>
+          </li>
+          <li class="row few">
+            <div class="lots"><b>3</b><small>of 10</small><span class="bar"><i style="width:30%"></i></span></div>
+            <div class="rt"><b>Blk 135–138, 141, 142 &amp; 145 Teck Whye Ln</b>
+              <span class="meta">HDB · Surface · <svg class="i"><use href="#i-walk"/></svg>2 min</span></div>
+            <div class="cost"><b>$2.40</b><small>est. 2 h</small></div>
+          </li>
+        </ul>
+      </section>
+
+      <nav class="nav">
+        <a class="on"><span><svg class="i"><use href="#i-park"/></svg></span>Parking</a>
+        <a><span><svg class="i"><use href="#i-bolt"/></svg></span>EV</a>
+        <a><span><svg class="i"><use href="#i-cctv"/></svg></span>Roads</a>
+        <a><span><svg class="i"><use href="#i-rain"/></svg></span>Weather</a>
+      </nav>
+      <div class="ad"><b>AD</b>Adaptive banner · collapses when empty</div><div class="base"></div>
+    </div>
+  </div>
+  <figcaption><strong>1 · Parking: near you, zero taps</strong>Pins are real HDB carparks at Teck Whye and show live free car lots, coloured by availability. Selecting a pin highlights its row. Each row leads with lots (of total), then walk time, up to three useful facts, and the estimated cost for your stay. One "Where to?" box replaces From/To.</figcaption>
+</figure>
+
+<!-- ============ 2 · EV ============ -->
+<figure class="device">
+  <div class="phone" data-time="5:42">
+    <div class="scr">
+      <div class="map" style="background-image:var(--map-tw)"></div>
+      <div class="fade"></div>
+
+      <div class="cp plenty" style="--x:130.5px;--y:291.3px"><span class="pl"><svg class="i fill"><use href="#i-boltf"/></svg></span>4/6</div>
+      <div class="cp plenty" style="--x:246.9px;--y:173.8px"><span class="pl"><svg class="i fill"><use href="#i-boltf"/></svg></span>2/3</div>
+      <div class="cp few" style="--x:38.8px;--y:275.5px"><span class="pl"><svg class="i fill"><use href="#i-boltf"/></svg></span>0/1</div>
+      <div class="cp plenty" style="--x:335.1px;--y:324.5px"><span class="pl"><svg class="i fill"><use href="#i-boltf"/></svg></span>1/2</div>
+      <div class="cp none" style="--x:337px;--y:220.3px"><span class="pl"><svg class="i fill"><use href="#i-boltf"/></svg></span>0/2</div>
+      <div class="me" style="--x:195px;--y:271.7px"></div>
+      <div class="cp plenty sel" style="--x:169.3px;--y:223.4px"><span class="pl"><svg class="i fill"><use href="#i-boltf"/></svg></span>3/3</div>
+
+      <div class="top">
+        <div class="search"><svg class="i"><use href="#i-search"/></svg><span>Where to?</span><button class="ib" aria-label="Settings"><svg class="i"><use href="#i-gear"/></svg></button></div>
+        <div class="chips">
+          <button class="chip on"><svg class="i"><use href="#i-locate"/></svg>Near you · Teck Whye</button>
+          <button class="chip"><svg class="i"><use href="#i-home"/></svg>Home</button>
+          <button class="chip wx"><svg class="i"><use href="#i-rain"/></svg>28°</button>
+        </div>
+      </div>
+      <button class="fab" style="top:356px" aria-label="My location"><svg class="i lg"><use href="#i-locate"/></svg></button>
+
+      <section class="sheet" style="top:418px;bottom:137px">
+        <div class="handle"></div>
+        <div class="sh-head">
+          <div><h2>6 charging sites nearby</h2><p><i class="live"></i>Live · updated 3 min ago · fits your car</p></div>
+        </div>
+        <div class="ctrls">
+          <button class="ctl on"><svg class="i"><use href="#i-plug"/></svg>Type 2 · CCS2</button>
+          <button class="ctl"><svg class="i"><use href="#i-check"/></svg>Available now</button>
+          <button class="ctl"><svg class="i"><use href="#i-bolt"/></svg>Any kW<svg class="i"><use href="#i-down"/></svg></button>
+          <button class="ctl"><svg class="i"><use href="#i-sliders"/></svg>Filters</button>
+        </div>
+        <ul class="rows">
+          <li class="row sel plenty">
+            <div class="lots"><b>3/3</b><small>free</small><span class="bar"><i style="width:100%"></i></span></div>
+            <div class="rt"><b>Blk 135A Teck Whye Ln</b>
+              <span class="meta">Charge+ · Level 1 · <svg class="i"><use href="#i-walk"/></svg>2 min</span>
+              <span class="facts"><em><svg class="i"><use href="#i-plug"/></svg>Type 2</em><em>7.4 kW AC</em><em>24 h</em></span></div>
+            <div class="cost"><b>$0.65</b><small>per kWh</small></div>
+          </li>
+          <li class="row plenty">
+            <div class="lots"><b>4/6</b><small>free</small><span class="bar"><i style="width:67%"></i></span></div>
+            <div class="rt"><b>Blk 109/117 Teck Whye Ln</b>
+              <span class="meta">Charge+ · Surface · <svg class="i"><use href="#i-walk"/></svg>2 min</span>
+              <span class="facts"><em><svg class="i"><use href="#i-plug"/></svg>Type 2</em><em>7.4 kW AC</em></span></div>
+            <div class="cost"><b>$0.65</b><small>per kWh</small></div>
+          </li>
+          <li class="row few">
+            <div class="lots"><b>0/1</b><small>in use</small><span class="bar"><i style="width:0"></i></span></div>
+            <div class="rt"><b>Blk 118A Teck Whye Ln</b>
+              <span class="meta">SP Mobility · <svg class="i"><use href="#i-walk"/></svg>5 min</span>
+              <span class="facts"><em><svg class="i"><use href="#i-plug"/></svg>CCS2</em><em>50 kW DC</em></span></div>
+            <div class="cost"><b>$0.79</b><small>per kWh</small></div>
+          </li>
+        </ul>
+      </section>
+
+      <nav class="nav">
+        <a><span><svg class="i"><use href="#i-park"/></svg></span>Parking</a>
+        <a class="on"><span><svg class="i"><use href="#i-bolt"/></svg></span>EV</a>
+        <a><span><svg class="i"><use href="#i-cctv"/></svg></span>Roads</a>
+        <a><span><svg class="i"><use href="#i-rain"/></svg></span>Weather</a>
+      </nav>
+      <div class="ad"><b>AD</b>Adaptive banner · collapses when empty</div><div class="base"></div>
+    </div>
+  </div>
+  <figcaption><strong>2 · EV: same map, chargers that fit your car</strong>Switching tab keeps the map exactly where it was; only the pins change. Each pin shows free / total connectors for <em>your</em> plugs (from your vehicle profile). The tab is called <b>EV</b> with a bolt icon and can be hidden in Settings when you don't drive an electric car.</figcaption>
+</figure>
+
+<!-- ============ 3 · ROADS ============ -->
+<figure class="device">
+  <div class="phone" data-time="5:42">
+    <div class="scr">
+      <div class="map" style="background-image:var(--map-sg)"></div>
+      <div class="fade"></div>
+      <div class="top">
+        <div class="search"><svg class="i"><use href="#i-search"/></svg><span>Where to?</span><button class="ib" aria-label="Settings"><svg class="i"><use href="#i-gear"/></svg></button></div>
+      </div>
+
+      <section class="sheet" style="top:112px;bottom:137px">
+        <div class="handle"></div>
+        <div class="feed-head">
+          <div style="flex:1"><h2>Traffic cameras</h2><p><i class="live"></i>All 8 LTA cameras · 5:36 pm</p></div>
+          <div class="seg"><button class="on"><svg class="i sm"><use href="#i-list"/></svg>Feed</button><button><svg class="i sm"><use href="#i-map"/></svg>Map</button></div>
+        </div>
+        <div class="sticky"><svg class="i sm"><use href="#i-cctv"/></svg>Woodlands<span class="tt"><svg class="i xs"><use href="#i-clock"/></svg>BKE 14 min</span></div>
+        <div class="feed">
+          <div class="feed-in" style="top:-150px">
+            <div class="cam">
+              <div class="img" style="background-image:url(assets/cams/2702.jpg)"><span class="xp"><svg class="i sm"><use href="#i-expand"/></svg></span></div>
+              <div class="cap"><div><b>Woodlands Checkpoint</b><small>Towards Johor</small></div><span class="ts"><i class="live"></i>5:36 pm</span></div>
+            </div>
+            <div class="cam adcard">
+              <div class="img"><div><span class="adl">AD</span>Inline ad, same size as a camera image<small style="font-size:11.5px;color:var(--faint)">Shown once, after the 2nd camera</small></div></div>
+              <div class="cap"><div><b style="color:var(--muted)">Sponsored</b><small>Clearly labelled, never between a camera and its caption</small></div></div>
+            </div>
+            <div class="cam">
+              <div class="img" style="background-image:url(assets/cams/2704.jpg)"><span class="xp"><svg class="i sm"><use href="#i-expand"/></svg></span></div>
+              <div class="cap"><div><b>BKE · Woodlands Flyover</b><small>Towards Woodlands Checkpoint</small></div><span class="ts"><i class="live"></i>5:36 pm</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <nav class="nav">
+        <a><span><svg class="i"><use href="#i-park"/></svg></span>Parking</a>
+        <a><span><svg class="i"><use href="#i-bolt"/></svg></span>EV</a>
+        <a class="on"><span><svg class="i"><use href="#i-cctv"/></svg></span>Roads</a>
+        <a><span><svg class="i"><use href="#i-rain"/></svg></span>Weather</a>
+      </nav>
+      <div class="ad"><b>AD</b>Adaptive banner · collapses when empty</div><div class="base"></div>
+    </div>
+  </div>
+  <figcaption><strong>3 · Roads: all 8 cameras as a feed (scrolled)</strong>Every camera LTA publishes, grouped Woodlands, Tuas, Sentosa, each group with its LTA travel time pinned at the top. After the second image comes one ad the same size as a camera image, plus the usual banner at the bottom. Tap an image for full screen; Map shows cameras and incidents.</figcaption>
+</figure>
+
+<!-- ============ 4 · WEATHER ============ -->
+<figure class="device">
+  <div class="phone" data-time="5:42">
+    <div class="scr">
+      <div class="map" style="background-image:var(--map-sg)"></div>
+      <img class="radar" src="assets/radar-1700.png" alt="">
+      <div class="fade"></div>
+      <div class="me" style="--x:140.7px;--y:291.3px"></div>
+
+      <div class="top">
+        <div class="search"><svg class="i"><use href="#i-search"/></svg><span>Where to?</span><button class="ib" aria-label="Settings"><svg class="i"><use href="#i-gear"/></svg></button></div>
+        <div class="chips">
+          <button class="chip on"><svg class="i"><use href="#i-locate"/></svg>Near you · Teck Whye</button>
+          <button class="chip"><svg class="i"><use href="#i-home"/></svg>Home</button>
+          <button class="chip"><svg class="i"><use href="#i-work"/></svg>Work</button>
+        </div>
+      </div>
+      <div class="legend" style="top:158px">Light<i></i>Heavy</div>
+      <div class="rctl" style="top:360px">
+        <button class="play" aria-label="Pause"><svg class="i"><use href="#i-pause"/></svg></button>
+        <div class="tl"><b>5:40 pm <span>Rain radar · last hour</span></b>
+          <div class="ticks"><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="c"></i></div>
+        </div>
+      </div>
+
+      <section class="sheet" style="top:422px;bottom:186px">
+        <div class="handle"></div>
+        <div class="wx-now">
+          <span class="big"><svg class="i xl"><use href="#i-rain"/></svg></span>
+          <div><h2>Light rain near you</h2><p>0.4 mm in last 5 min · gauge 1.1 km away</p></div>
+          <span class="t num">28°</span>
+        </div>
+        <div class="wx-row"><svg class="i"><use href="#i-storm"/></svg><div><b>Thundery showers</b><small>Next 2 hours · Choa Chu Kang · until 7:00 pm</small></div></div>
+        <div class="days">
+          <div>Tue<svg class="i"><use href="#i-storm"/></svg><small>24–33°</small></div>
+          <div>Wed<svg class="i"><use href="#i-rain"/></svg><small>25–33°</small></div>
+          <div>Thu<svg class="i"><use href="#i-partsun"/></svg><small>25–34°</small></div>
+          <div>Fri<svg class="i"><use href="#i-storm"/></svg><small>24–32°</small></div>
+        </div>
+      </section>
+
+      <div class="parked">
+        <span class="pi">P</span>
+        <div class="tx"><b>Parked · Blk 135A Teck Whye</b><small>Deck 4B · est. $0.84 so far</small></div>
+        <span class="tm">42m</span><svg class="i"><use href="#i-right"/></svg>
+      </div>
+      <nav class="nav">
+        <a><span><svg class="i"><use href="#i-park"/></svg></span>Parking</a>
+        <a><span><svg class="i"><use href="#i-bolt"/></svg></span>EV</a>
+        <a><span><svg class="i"><use href="#i-cctv"/></svg></span>Roads</a>
+        <a class="on"><span><svg class="i"><use href="#i-rain"/></svg></span>Weather</a>
+      </nav>
+      <div class="ad"><b>AD</b>Adaptive banner · collapses when empty</div><div class="base"></div>
+    </div>
+  </div>
+  <figcaption><strong>4 · Weather: radar first, three facts only</strong>The NEA rain radar plays over the same map. Below it, just three things: rain where you are now (from the nearest gauge), the next 2 hours, and a 4-day strip. The black <b>Parked</b> bar stays above the nav on every tab while you're parked.</figcaption>
+</figure>
+
+</main>
+
+<section class="notes">
+  <div class="note"><h2>What makes Kerb different</h2><ul>
+    <li><strong>Familiar first.</strong> Google-Maps-style colours and white floating controls, so it feels known on day one.</li>
+    <li><strong>Lots block</strong> on the left of every row: big number, "of total", fill bar. The same block shows "3/3 free" on EV.</li>
+    <li><strong>Standard M3 nav</strong> with a pill indicator. The safest choice for accessibility and learnability.</li>
+  </ul></div>
+  <div class="note"><h2>Review changes included</h2><ul>
+    <li>Tabs renamed <strong>Parking · EV · Roads · Weather</strong>. EV uses a bolt icon.</li>
+    <li>EV tab can be turned off in Settings (off by default unless your vehicle is electric).</li>
+    <li>Roads shows <strong>all 8 cameras</strong> with one in-feed ad after the 2nd image.</li>
+    <li>Weather is cut to radar + now + 2 hours + 4 days.</li>
+  </ul></div>
+  <div class="note"><h2>Trade-offs</h2><ul>
+    <li>Least distinctive of the three: it looks like a good map app, not a brand.</li>
+    <li>White pins can blend into light map areas. Mitigated with shadows and a coloured P tile.</li>
+  </ul></div>
+</section>
+<p class="disclaimer">Visual direction only. Map: © OpenFreeMap, © OpenMapTiles, data © OpenStreetMap contributors. Carpark lots are real HDB data (data.gov.sg) captured 26 Oct 2026. Camera images: LTA via data.gov.sg (26 Oct 2026, 5:36 pm). Radar: NEA (25 Oct 2026, 5:00 pm). EV chargers, prices, gauge reading and the parked session are sample data.</p>
+<script src="shared/chrome.js"></script>
+</body>
+</html>

@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SG Car Buddy · Concept B · Gantry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/board.css">
+<style>
+/* ===== Concept B · Gantry tokens (light) ===== */
+.phone {
+  --bg:#f1f0eb; --surface:#ffffff; --surface-2:#e9e7e0; --line:#d9d6cc;
+  --ink:#111214; --muted:#5b5d61; --faint:#9a9b9e;
+  --plate:#131417; --plate-2:#24262b; --on-plate:#ffffff; --plate-line:transparent;
+  --sign:#ffc629; --on-sign:#111214; --sign-deep:#8a6300;
+  --plenty:#36e07c; --limited:#ffbe2e; --few:#ff5b50; --none:#9a9ea6;   /* on black plates */
+  --plenty-ink:#0f8a43; --limited-ink:#a86a00; --few-ink:#cc2d24;       /* on paper */
+  --rain:#1e63d6;
+  --map-tw:url(assets/maps/tw-positron.jpg); --map-sg:url(assets/maps/sg-positron.jpg);
+  --map-fade:rgba(241,240,235,.9);
+  font-family:"Barlow",system-ui,sans-serif; font-size:15px; line-height:1.3;
+}
+html[data-theme=dark] .phone {
+  --bg:#0a0a0b; --surface:#141416; --surface-2:#1c1d20; --line:#2a2b2f;
+  --ink:#f2f2ef; --muted:#a2a4a9; --faint:#62646a;
+  --plate:#1b1c20; --plate-2:#26282d; --on-plate:#ffffff; --plate-line:#34363c;
+  --plenty-ink:#3ad97f; --limited-ink:#ffbe2e; --few-ink:#ff6a60;
+  --rain:#6aa8ff;
+  --map-tw:url(assets/maps/tw-dark.jpg); --map-sg:url(assets/maps/sg-dark.jpg);
+  --map-fade:rgba(10,10,11,.9);
+}
+:where(.phone button) { border:0; background:none; padding:0; cursor:pointer; font:inherit; color:inherit; text-align:inherit; }
+.cd { font-family:"Barlow Condensed",sans-serif; font-variant-numeric:tabular-nums; }
+.up { text-transform:uppercase; letter-spacing:.04em; }
+
+.fade { position:absolute; inset:0 0 auto; height:150px; background:linear-gradient(var(--map-fade), transparent); }
+.top { position:absolute; left:12px; right:12px; top:52px; z-index:10; display:flex; flex-direction:column; gap:8px; }
+.search { display:flex; align-items:center; height:52px; border-radius:12px; background:var(--plate); color:var(--on-plate); box-shadow:0 0 0 1px var(--plate-line), 0 8px 20px rgba(0,0,0,.25); overflow:hidden; }
+.search .ys { flex:none; display:grid; place-items:center; width:52px; height:52px; background:var(--sign); color:var(--on-sign); }
+.search > span:not(.ys) { flex:1; padding-left:14px; font:700 19px/1 "Barlow Condensed",sans-serif; letter-spacing:.06em; text-transform:uppercase; opacity:.85; }
+.search .ib { display:grid; place-items:center; width:48px; height:52px; color:#fff; opacity:.8; }
+.chips { display:flex; gap:6px; }
+.plt { display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 11px; border-radius:7px; background:var(--surface); color:var(--ink); box-shadow:0 0 0 1.5px var(--ink); font:700 14px/1 "Barlow Condensed",sans-serif; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; }
+.plt .i { width:15px; height:15px; }
+.plt.on { background:var(--sign); color:var(--on-sign); box-shadow:0 0 0 1.5px var(--on-sign); }
+html[data-theme=dark] .plt { background:var(--plate); box-shadow:0 0 0 1px var(--plate-line); }
+html[data-theme=dark] .plt.on { background:var(--sign); box-shadow:none; }
+.plt.wx { margin-left:auto; }
+
+/* pins: black sign plates */
+.cp { position:absolute; left:var(--x); top:var(--y); transform:translate(-50%, calc(-100% - 6px)); display:flex; align-items:center; gap:6px; height:28px; padding:0 8px 0 3px; border-radius:6px; background:var(--plate); color:var(--lvl); box-shadow:0 0 0 1px var(--plate-line), 0 3px 8px rgba(0,0,0,.3); font:800 18px/1 "Barlow Condensed",sans-serif; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.cp::after { content:""; position:absolute; left:50%; bottom:-6px; margin-left:-6px; border:6px solid transparent; border-bottom:0; border-top-color:var(--plate); }
+.cp .pl { display:grid; place-items:center; width:22px; height:22px; border-radius:4px; background:var(--sign); color:var(--on-sign); font:800 16px/1 "Barlow Condensed",sans-serif; }
+.cp .pl .i { width:14px; height:14px; }
+.cp.sel { height:36px; padding:0 11px 0 4px; font-size:23px; box-shadow:0 0 0 3px var(--sign), 0 6px 14px rgba(0,0,0,.35); z-index:3; }
+.cp.sel .pl { width:28px; height:28px; font-size:20px; }
+.dp { position:absolute; left:var(--x); top:var(--y); width:12px; height:12px; margin:-6px 0 0 -6px; border-radius:3px; background:var(--plate); box-shadow:inset 0 0 0 3px var(--lvl), 0 1px 3px rgba(0,0,0,.3); }
+.plenty { --lvl:var(--plenty); --lvl-ink:var(--plenty-ink); }
+.limited { --lvl:var(--limited); --lvl-ink:var(--limited-ink); }
+.few { --lvl:var(--few); --lvl-ink:var(--few-ink); }
+.none { --lvl:var(--none); --lvl-ink:var(--muted); }
+.me { position:absolute; left:var(--x); top:var(--y); width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%; background:#1f6bff; box-shadow:0 0 0 3px #fff, 0 0 0 11px rgba(31,107,255,.2); }
+.fab { position:absolute; right:12px; z-index:9; display:grid; place-items:center; width:46px; height:46px; border-radius:10px; background:var(--plate); color:var(--sign); box-shadow:0 6px 14px rgba(0,0,0,.25); }
+
+/* sheet */
+.sheet { position:absolute; left:0; right:0; z-index:12; display:flex; flex-direction:column; background:var(--bg); border-radius:18px 18px 0 0; box-shadow:0 -6px 22px rgba(0,0,0,.16); overflow:hidden; }
+.handle { flex:none; width:38px; height:5px; margin:8px auto 2px; border-radius:3px; background:var(--line); }
+.sh-head { flex:none; display:flex; align-items:baseline; justify-content:space-between; gap:8px; padding:4px 14px 8px; }
+.sh-head h2 { margin:0; font:800 22px/1.05 "Barlow Condensed",sans-serif; letter-spacing:.02em; text-transform:uppercase; }
+.sh-head p { margin:0; display:flex; align-items:center; gap:6px; font:600 13px/1 "Barlow Condensed",sans-serif; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+.live { width:8px; height:8px; border-radius:2px; background:var(--plenty-ink); }
+.ctrls { flex:none; display:flex; gap:6px; padding:0 14px 10px; }
+.ctl { display:inline-flex; align-items:center; gap:5px; height:32px; padding:0 9px; border-radius:7px; background:var(--surface); box-shadow:inset 0 0 0 1.5px var(--line); font:700 14px/1 "Barlow Condensed",sans-serif; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
+.ctl small { color:var(--muted); font-weight:600; }
+.ctl .i { width:15px; height:15px; }
+.ctl.on { background:var(--plate); color:var(--on-plate); box-shadow:none; }
+.ctl.on small { color:var(--sign); }
+.rows { flex:1; margin:0; padding:0; list-style:none; overflow:hidden; border-top:2px solid var(--ink); }
+.row { display:grid; grid-template-columns:70px 1fr auto; gap:12px; align-items:center; padding:10px 14px; border-bottom:1px solid var(--line); background:var(--surface); }
+.row.sel { box-shadow:inset 5px 0 0 var(--sign); }
+.tile { display:flex; flex-direction:column; align-items:center; justify-content:center; height:60px; border-radius:8px; background:var(--plate); box-shadow:0 0 0 1px var(--plate-line); }
+.tile b { font:800 30px/.95 "Barlow Condensed",sans-serif; color:var(--lvl); font-variant-numeric:tabular-nums; letter-spacing:-.01em; }
+.tile small { font:600 12px/1.1 "Barlow Condensed",sans-serif; color:#9a9ea6; letter-spacing:.06em; text-transform:uppercase; }
+.rt { min-width:0; display:flex; flex-direction:column; gap:4px; }
+.rt > b { font-size:16px; font-weight:700; line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.meta { font:600 13px/1 "Barlow Condensed",sans-serif; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:5px; white-space:nowrap; }
+.meta .i { width:13px; height:13px; }
+.facts { display:flex; gap:4px; overflow:hidden; }
+.facts em { display:inline-flex; align-items:center; gap:3px; height:20px; padding:0 6px; border-radius:4px; box-shadow:inset 0 0 0 1.2px var(--line); font:700 12px/1 "Barlow Condensed",sans-serif; font-style:normal; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+.facts em .i { width:11px; height:11px; }
+.facts em.ev { color:var(--plenty-ink); box-shadow:inset 0 0 0 1.2px currentColor; }
+.facts em.warn { background:var(--sign); color:var(--on-sign); box-shadow:none; }
+.cost { text-align:right; }
+.cost b { display:block; font:800 24px/1 "Barlow Condensed",sans-serif; font-variant-numeric:tabular-nums; }
+.cost small { font:600 12px/1 "Barlow Condensed",sans-serif; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+
+/* nav + ad */
+.nav { position:absolute; left:0; right:0; bottom:73px; z-index:20; height:64px; display:grid; grid-template-columns:repeat(4,1fr); background:var(--plate); color:#c9cbd0; box-shadow:0 0 0 1px var(--plate-line); }
+.nav a { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; text-decoration:none; font:700 13px/1 "Barlow Condensed",sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+.nav a.on { color:var(--sign); }
+.nav a.on::before { content:""; position:absolute; top:0; left:22%; right:22%; height:4px; border-radius:0 0 3px 3px; background:var(--sign); }
+.ad { position:absolute; left:0; right:0; bottom:22px; z-index:20; height:50px; display:flex; align-items:center; justify-content:center; gap:10px; background:var(--surface-2); border-top:1px solid var(--line); font-size:12px; color:var(--faint); }
+.ad b, .adl { padding:2px 6px; border-radius:3px; background:var(--ink); color:var(--bg); font:800 11px/1 "Barlow Condensed",sans-serif; letter-spacing:.08em; }
+.base { position:absolute; left:0; right:0; bottom:0; height:22px; z-index:19; background:var(--surface-2); }
+
+/* Roads: departure board + CCTV wall */
+.board { flex:none; margin:2px 12px 10px; border-radius:12px; background:var(--plate); color:#fff; box-shadow:0 0 0 1px var(--plate-line); overflow:hidden; }
+.board .bh { display:flex; align-items:center; gap:7px; padding:9px 12px 7px; font:700 13px/1 "Barlow Condensed",sans-serif; letter-spacing:.1em; text-transform:uppercase; color:#9a9ea6; }
+.board .bh .live { background:var(--plenty); }
+.board .bh span:last-child { margin-left:auto; }
+.brow { display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:baseline; padding:7px 12px; border-top:1px solid #2b2d33; }
+.brow b { font:800 21px/1 "Barlow Condensed",sans-serif; letter-spacing:.05em; text-transform:uppercase; }
+.brow small { font:600 13px/1 "Barlow Condensed",sans-serif; letter-spacing:.06em; text-transform:uppercase; color:#9a9ea6; }
+.brow .t { font:800 26px/1 "Barlow Condensed",sans-serif; color:var(--sign); font-variant-numeric:tabular-nums; }
+.brow .t small { color:var(--sign); opacity:.8; }
+.wall { flex:1; overflow:hidden; display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:max-content; gap:8px; align-content:start; padding:0 12px; }
+.ct { border-radius:8px; overflow:hidden; background:var(--plate); box-shadow:0 0 0 1px var(--plate-line); }
+.ct .img { aspect-ratio:16/9; background:#333 center / cover; }
+.ct .cap { display:flex; align-items:center; gap:6px; height:28px; padding:0 8px; color:#fff; font:700 13px/1 "Barlow Condensed",sans-serif; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; overflow:hidden; }
+.ct .cap span { color:var(--sign); }
+.ct .cap small { margin-left:auto; color:#9a9ea6; font-weight:600; }
+.adrow { grid-column:1 / -1; display:flex; align-items:center; justify-content:center; gap:10px; height:110px; border-radius:8px; background:repeating-linear-gradient(135deg, var(--surface-2) 0 12px, var(--surface) 12px 24px); box-shadow:inset 0 0 0 1.5px var(--line); color:var(--muted); font-size:13px; font-weight:600; text-align:center; }
+.adrow > div { display:flex; flex-direction:column; align-items:center; gap:5px; }
+
+/* Weather */
+.radar { position:absolute; left:-214px; top:-227.7px; width:1090.8px; height:1090.6px; opacity:.7; mix-blend-mode:multiply; }
+html[data-theme=dark] .radar { mix-blend-mode:screen; opacity:.8; }
+.rctl { position:absolute; left:12px; right:12px; z-index:11; display:flex; align-items:center; gap:10px; height:50px; padding:0 12px 0 5px; border-radius:10px; background:var(--plate); color:#fff; box-shadow:0 0 0 1px var(--plate-line), 0 8px 20px rgba(0,0,0,.25); }
+.rctl .play { display:grid; place-items:center; width:40px; height:40px; border-radius:7px; background:var(--sign); color:var(--on-sign); }
+.rctl .tl { flex:1; display:flex; flex-direction:column; gap:6px; }
+.rctl .tl b { display:flex; justify-content:space-between; font:800 17px/1 "Barlow Condensed",sans-serif; letter-spacing:.05em; }
+.rctl .tl b span { font-weight:600; font-size:13px; color:#9a9ea6; letter-spacing:.08em; text-transform:uppercase; }
+.ticks { display:grid; grid-template-columns:repeat(12,1fr); gap:3px; }
+.ticks i { height:6px; border-radius:1px; background:#3a3c42; }
+.ticks i.p { background:#77787d; }
+.ticks i.c { background:var(--sign); }
+.wx { padding:2px 14px 0; }
+.wx .lbl { font:700 13px/1 "Barlow Condensed",sans-serif; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.wx .now { display:flex; align-items:center; gap:12px; margin:6px 0 10px; }
+.wx .now .ico { display:grid; place-items:center; width:50px; height:50px; border-radius:10px; background:var(--plate); color:#6cb4ff; }
+.wx .now h2 { margin:0; font:800 30px/.95 "Barlow Condensed",sans-serif; letter-spacing:.02em; text-transform:uppercase; }
+.wx .now p { margin:3px 0 0; font:600 13.5px/1 "Barlow Condensed",sans-serif; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+.wx .now .t { margin-left:auto; font:800 40px/1 "Barlow Condensed",sans-serif; }
+.wtab { width:100%; border-collapse:collapse; font:700 15px/1 "Barlow Condensed",sans-serif; letter-spacing:.05em; text-transform:uppercase; }
+.wtab td { padding:6px 0; border-top:1px solid var(--line); vertical-align:middle; }
+.wtab td:first-child { width:70px; color:var(--muted); }
+.wtab td:last-child { text-align:right; font-variant-numeric:tabular-nums; }
+.wtab .i { width:16px; height:16px; vertical-align:-3px; margin-right:6px; color:var(--rain); }
+.parked { position:absolute; left:8px; right:8px; bottom:141px; z-index:21; display:flex; align-items:center; gap:10px; height:48px; padding:0 10px 0 5px; border-radius:10px; background:var(--sign); color:var(--on-sign); box-shadow:0 8px 20px rgba(0,0,0,.25); }
+.parked .pi { display:grid; place-items:center; width:38px; height:38px; border-radius:7px; background:var(--plate); color:var(--sign); font:800 24px/1 "Barlow Condensed",sans-serif; }
+.parked .tx { flex:1; display:flex; flex-direction:column; gap:2px; }
+.parked .tx b { font:800 16px/1 "Barlow Condensed",sans-serif; letter-spacing:.05em; text-transform:uppercase; }
+.parked .tx small { font:600 13px/1 "Barlow Condensed",sans-serif; letter-spacing:.05em; text-transform:uppercase; opacity:.75; }
+.parked .tm { font:800 24px/1 "Barlow Condensed",sans-serif; font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body>
+<header class="board-head">
+  <div>
+    <div class="eyebrow">SG Car Buddy · Concept B of 3</div>
+    <h1>Gantry: road-sign boldness, big numbers</h1>
+    <p class="lede">Inspired by gantry and carpark signs, without copying any official design. Black plates with a yellow P, tall condensed numbers that read at arm's length, and a departure-board panel for checkpoint times. The grey map lets the plates pop. The most <b>glanceable</b> of the three, with the strongest personality.</p>
+  </div>
+  <div class="toolbar">
+    <a href="index.html"><svg class="i sm"><use href="#i-left"/></svg>All concepts</a>
+    <button type="button" data-theme-toggle><span data-theme-label>Show dark theme</span></button>
+  </div>
+</header>
+
+<main class="devices">
+
+<!-- ============ 1 · PARKING ============ -->
+<figure class="device">
+  <div class="phone" data-time="5:42">
+    <div class="scr">
+      <div class="map" style="background-image:var(--map-tw)"></div>
+      <div class="fade"></div>
+
+      <div class="cp plenty" style="--x:38.8px;--y:275.5px"><span class="pl">P</span>393</div>
+      <div class="cp plenty" style="--x:44.2px;--y:334px"><span class="pl">P</span>104</div>
+      <div class="cp limited" style="--x:81.2px;--y:176.2px"><span class="pl">P</span>23</div>
+      <div class="dp limited" style="--x:127.8px;--y:210.2px"></div>
+      <div class="cp plenty" style="--x:130.5px;--y:291.3px"><span class="pl">P</span>188</div>
+      <div class="dp few" style="--x:149.7px;--y:232.6px"></div>
+      <div class="dp none" style="--x:219.4px;--y:230.2px"></div>
+      <div class="dp limited" style="--x:244.8px;--y:193.8px"></div>
+      <div class="cp plenty" style="--x:246.9px;--y:173.8px"><span class="pl">P</span>178</div>
+      <div class="dp none" style="--x:185.1px;--y:165.2px"></div>
+      <div class="cp plenty" style="--x:337px;--y:220.3px"><span class="pl">P</span>124</div>
+      <div class="cp plenty" style="--x:335.1px;--y:324.5px"><span class="pl">P</span>133</div>
+      <div class="cp plenty" style="--x:301.5px;--y:408.6px"><span class="pl">P</span>70</div>
+      <div class="me" style="--x:195px;--y:271.7px"></div>
+      <div class="cp plenty sel" style="--x:169.3px;--y:223.4px"><span class="pl">P</span>236</div>
+
+      <div class="top">
+        <div class="search"><span class="ys"><svg class="i lg"><use href="#i-search"/></svg></span><span>Where to?</span><button class="ib" aria-label="Settings"><svg class="i"><use href="#i-gear"/></svg></button></div>
+        <div class="chips">
+          <button class="plt on"><svg class="i"><use href="#i-locate"/></svg>Near you · Teck Whye</button>
+          <button class="plt"><svg class="i"><use href="#i-home"/></svg>Home</button>
+          <button class="plt wx"><svg class="i"><use href="#i-rain"/></svg>28°</button>
+        </div>
+      </div>
+      <button class="fab" style="top:358px" aria-label="My location"><svg class="i lg"><use href="#i-locate"/></svg></button>
+
+      <section class="sheet" style="top:418px;bottom:137px">
+        <div class="handle"></div>
+        <div class="sh-head"><h2>14 carparks nearby</h2><p><i class="live"></i>Live · 1 min ago</p></div>
+        <div class="ctrls">
+          <button class="ctl"><small>Sort</small>Nearest</button>
+          <button class="ctl on"><small>Stay</small>2 h</button>
+          <button class="ctl"><svg class="i"><use href="#i-sliders"/></svg>Filters</button>
+          <button class="ctl"><svg class="i"><use href="#i-roof"/></svg>Covered</button>
+        </div>
+        <ul class="rows">
+          <li class="row sel plenty">
+            <div class="tile"><b>236</b><small>/ 298 free</small></div>
+            <div class="rt"><b>Blk 135A Teck Whye Ln</b>
+              <span class="meta">HDB · Multi-storey · <svg class="i"><use href="#i-walk"/></svg>2 min</span>
+              <span class="facts"><em class="ev"><svg class="i fill"><use href="#i-boltf"/></svg>3 EV</em><em>Night</em><em class="warn"><svg class="i"><use href="#i-height"/></svg>1.8 m</em></span></div>
+            <div class="cost"><b>$2.40</b><small>2 h est.</small></div>
+          </li>
+          <li class="row plenty">
+            <div class="tile"><b>188</b><small>/ 464 free</small></div>
+            <div class="rt"><b>Blk 109/117 Teck Whye Ln</b>
+              <span class="meta">HDB · Surface · <svg class="i"><use href="#i-walk"/></svg>2 min</span>
+              <span class="facts"><em class="ev"><svg class="i fill"><use href="#i-boltf"/></svg>6 EV</em><em>Night</em><em>Free Sun/PH</em></span></div>
+            <div class="cost"><b>$2.40</b><small>2 h est.</small></div>
+          </li>
+          <li class="row few">
+            <div class="tile"><b>3</b><small>/ 10 free</small></div>
+            <div class="rt"><b>Blk 135–138, 141, 142 &amp; 145 Teck Whye Ln</b>
+              <span class="meta">HDB · Surface · <svg class="i"><use href="#i-walk"/></svg>2 min</span></div>
+            <div class="cost"><b>$2.40</b><small>2 h est.</small></div>
+          </li>
+        </ul>
+      </section>
+
+      <nav class="nav">
+        <a class="on"><svg class="i lg"><use href="#i-park"/></svg>Parking</a>
+        <a><svg class="i lg"><use href="#i-bolt"/></svg>EV</a>
+        <a><svg class="i lg"><use href="#i-cctv"/></svg>Roads</a>
+        <a><svg class="i lg"><use href="#i-rain"/></svg>Weather</a>
+      </nav>
+      <div class="ad"><b>AD</b>Adaptive banner · collapses when empty</div><div class="base"></div>
+    </div>
+  </div>
+  <figcaption><strong>1 · Parking: signs you can read at a glance</strong>Each pin is a small black plate with a yellow P and the free lots in tall numerals, coloured by availability. When pins crowd, the smaller carparks shrink to coloured squares. The list reads like a board: lots tile, name, facts, price for your stay.</figcaption>
+</figure>
+
+<!-- ============ 2 · EV ============ -->
+<figure class="device">
+  <div class="phone" data-time="5:42">
+    <div class="scr">
+      <div class="map" style="background-image:var(--map-tw)"></div>
+      <div class="fade"></div>
+
+      <div class="cp plenty" style="--x:130.5px;--y:291.3px"><span class="pl"><svg class="i fill"><use href="#i-boltf"/></svg></span>4/6</div>
+      <div class="cp plenty" style="--x:246.9px;--y:173.8px"><span class="pl"><svg class="i fill"><use href="#i-boltf"/></svg></span>2/3</div>
+      <div class="cp few" style="--x:38.8px;--y:275.5px"><span class="pl"><svg class="i fill"><use href="#i-boltf"/></svg></span>0/1</div>
+      <div class="cp plenty" style="--x:335.1px;--y:324.5px"><span class="pl"><svg class="i fill"><use href="#i-boltf"/></svg></span>1/2</div>
+      <div class="cp none" style="--x:337px;--y:220.3px"><span class="pl"><svg class="i fill"><use href="#i-boltf"/></svg></span>0/2</div>
+      <div class="me" style="--x:195px;--y:271.7px"></div>
+      <div class="cp plenty sel" style="--x:169.3px;--y:223.4px"><span class="pl"><svg class="i fill"><use href="#i-boltf"/></svg></span>3/3</div>
+
+      <div class="top">
+        <div class="search"><span class="ys"><svg class="i lg"><use href="#i-search"/></svg></span><span>Where to?</span><button class="ib" aria-label="Settings"><svg class="i"><use href="#i-gear"/></svg></button></div>
+        <div class="chips">
+          <button class="plt on"><svg class="i"><use href="#i-locate"/></svg>Near you · Teck Whye</button>
+          <button class="plt"><svg class="i"><use href="#i-home"/></svg>Home</button>
+          <button class="plt wx"><svg class="i"><use href="#i-rain"/></svg>28°</button>
+        </div>
+      </div>
+      <button class="fab" style="top:358px" aria-label="My location"><svg class="i lg"><use href="#i-locate"/></svg></button>
+
+      <section class="sheet" style="top:418px;bottom:137px">
+        <div class="handle"></div>
+        <div class="sh-head"><h2>6 charging sites</h2><p><i class="live"></i>Live · 3 min ago</p></div>
+        <div class="ctrls">
+          <button class="ctl on"><small>Plug</small>Type 2 · CCS2</button>
+          <button class="ctl"><svg class="i"><use href="#i-check"/></svg>Free now</button>
+          <button class="ctl"><small>Power</small>Any</button>
+          <button class="ctl"><svg class="i"><use href="#i-sliders"/></svg></button>
+        </div>
+        <ul class="rows">
+          <li class="row sel plenty">
+            <div class="tile"><b>3/3</b><small>free</small></div>
+            <div class="rt"><b>Blk 135A Teck Whye Ln</b>
+              <span class="meta">Charge+ · Level 1 · <svg class="i"><use href="#i-walk"/></svg>2 min</span>
+              <span class="facts"><em><svg class="i"><use href="#i-plug"/></svg>Type 2</em><em>7.4 kW AC</em><em>24 h</em></span></div>
+            <div class="cost"><b>$0.65</b><small>per kWh</small></div>
+          </li>
+          <li class="row plenty">
+            <div class="tile"><b>4/6</b><small>free</small></div>
+            <div class="rt"><b>Blk 109/117 Teck Whye Ln</b>
+              <span class="meta">Charge+ · Surface · <svg class="i"><use href="#i-walk"/></svg>2 min</span>
+              <span class="facts"><em><svg class="i"><use href="#i-plug"/></svg>Type 2</em><em>7.4 kW AC</em></span></div>
+            <div class="cost"><b>$0.65</b><small>per kWh</small></div>
+          </li>
+          <li class="row few">
+            <div class="tile"><b>0/1</b><small>in use</small></div>
+            <div class="rt"><b>Blk 118A Teck Whye Ln</b>
+              <span class="meta">SP Mobility · <svg class="i"><use href="#i-walk"/></svg>5 min</span>
+              <span class="facts"><em><svg class="i"><use href="#i-plug"/></svg>CCS2</em><em>50 kW DC</em></span></div>
+            <div class="cost"><b>$0.79</b><small>per kWh</small></div>
+          </li>
+        </ul>
+      </section>
+
+      <nav class="nav">
+        <a><svg class="i lg"><use href="#i-park"/></svg>Parking</a>
+        <a class="on"><svg class="i lg"><use href="#i-bolt"/></svg>EV</a>
+        <a><svg class="i lg"><use href="#i-cctv"/></svg>Roads</a>
+        <a><svg class="i lg"><use href="#i-rain"/></svg>Weather</a>
+      </nav>
+      <div class="ad"><b>AD</b>Adaptive banner · collapses when empty</div><div class="base"></div>
+    </div>
+  </div>
+  <figcaption><strong>2 · EV: the same plates, with a bolt</strong>The map stays put and the plates switch from lots to free/total connectors for your plugs. Your plug types (from the vehicle profile) show as the first, already-on filter. Hide the whole EV tab in Settings if you don't need it.</figcaption>
+</figure>
+
+<!-- ============ 3 · ROADS ============ -->
+<figure class="device">
+  <div class="phone" data-time="5:42">
+    <div class="scr">
+      <div class="map" style="background-image:var(--map-sg)"></div>
+      <div class="fade"></div>
+      <div class="top">
+        <div class="search"><span class="ys"><svg class="i lg"><use href="#i-search"/></svg></span><span>Where to?</span><button class="ib" aria-label="Settings"><svg class="i"><use href="#i-gear"/></svg></button></div>
+      </div>
+
+      <section class="sheet" style="top:114px;bottom:137px">
+        <div class="handle"></div>
+        <div class="board">
+          <div class="bh"><i class="live"></i>LTA travel time to checkpoint<span>5:40 pm</span></div>
+          <div class="brow"><b>Woodlands</b><small>via BKE</small><span class="t">14<small> min</small></span></div>
+          <div class="brow"><b>Tuas</b><small>via AYE</small><span class="t">9<small> min</small></span></div>
+        </div>
+        <div class="wall">
+          <div class="ct"><div class="img" style="background-image:url(assets/cams/2701.jpg)"></div><div class="cap"><span>W</span>Causeway<small>5:36</small></div></div>
+          <div class="ct"><div class="img" style="background-image:url(assets/cams/2702.jpg)"></div><div class="cap"><span>W</span>Checkpoint<small>5:36</small></div></div>
+          <div class="adrow"><div><span class="adl">AD</span>Inline ad after the first two cameras<small style="font-size:11.5px;color:var(--faint)">Full width, about one camera-row tall (e.g. 320 × 100)</small></div></div>
+          <div class="ct"><div class="img" style="background-image:url(assets/cams/2704.jpg)"></div><div class="cap"><span>W</span>BKE Flyover<small>5:36</small></div></div>
+          <div class="ct"><div class="img" style="background-image:url(assets/cams/4703.jpg)"></div><div class="cap"><span>T</span>Second Link<small>5:36</small></div></div>
+          <div class="ct"><div class="img" style="background-image:url(assets/cams/4712.jpg)"></div><div class="cap"><span>T</span>AYE Tuas Ave 8<small>5:36</small></div></div>
+          <div class="ct"><div class="img" style="background-image:url(assets/cams/4713.jpg)"></div><div class="cap"><span>T</span>Checkpoint<small>5:36</small></div></div>
+          <div class="ct"><div class="img" style="background-image:url(assets/cams/4798.jpg)"></div><div class="cap"><span>S</span>Sentosa 1<small>5:36</small></div></div>
+          <div class="ct"><div class="img" style="background-image:url(assets/cams/4799.jpg)"></div><div class="cap"><span>S</span>Sentosa 2<small>5:36</small></div></div>
+        </div>
+      </section>
+
+      <nav class="nav">
+        <a><svg class="i lg"><use href="#i-park"/></svg>Parking</a>
+        <a><svg class="i lg"><use href="#i-bolt"/></svg>EV</a>
+        <a class="on"><svg class="i lg"><use href="#i-cctv"/></svg>Roads</a>
+        <a><svg class="i lg"><use href="#i-rain"/></svg>Weather</a>
+      </nav>
+      <div class="ad"><b>AD</b>Adaptive banner · collapses when empty</div><div class="base"></div>
+    </div>
+  </div>
+  <figcaption><strong>3 · Roads: a camera wall, all 8 at once</strong>A departure board gives LTA's travel time to each checkpoint. Below it, every camera sits in a two-column wall (W Woodlands, T Tuas, S Sentosa), so you see the whole picture with one short scroll. After the first two images comes one full-width ad, about one camera row tall. Tap any image for full screen.</figcaption>
+</figure>
+
+<!-- ============ 4 · WEATHER ============ -->
+<figure class="device">
+  <div class="phone" data-time="5:42">
+    <div class="scr">
+      <div class="map" style="background-image:var(--map-sg)"></div>
+      <img class="radar" src="assets/radar-1700.png" alt="">
+      <div class="fade"></div>
+      <div class="me" style="--x:140.7px;--y:291.3px"></div>
+
+      <div class="top">
+        <div class="search"><span class="ys"><svg class="i lg"><use href="#i-search"/></svg></span><span>Where to?</span><button class="ib" aria-label="Settings"><svg class="i"><use href="#i-gear"/></svg></button></div>
+        <div class="chips">
+          <button class="plt on"><svg class="i"><use href="#i-locate"/></svg>Near you · Teck Whye</button>
+          <button class="plt"><svg class="i"><use href="#i-home"/></svg>Home</button>
+          <button class="plt"><svg class="i"><use href="#i-work"/></svg>Work</button>
+        </div>
+      </div>
+      <div class="rctl" style="top:356px">
+        <button class="play" aria-label="Pause"><svg class="i"><use href="#i-pause"/></svg></button>
+        <div class="tl"><b>5:40 PM <span>Rain radar · 1 h</span></b>
+          <div class="ticks"><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="c"></i></div>
+        </div>
+      </div>
+
+      <section class="sheet" style="top:418px;bottom:186px">
+        <div class="handle"></div>
+        <div class="wx">
+          <div class="lbl">Now · Teck Whye</div>
+          <div class="now">
+            <span class="ico"><svg class="i xl"><use href="#i-rain"/></svg></span>
+            <div><h2>Light rain</h2><p>0.4 mm in 5 min · gauge 1.1 km</p></div>
+            <span class="t">28°</span>
+          </div>
+          <table class="wtab">
+            <tr><td>Next 2 h</td><td><svg class="i"><use href="#i-storm"/></svg>Thundery showers</td><td>to 7 pm</td></tr>
+            <tr><td>Tue</td><td><svg class="i"><use href="#i-storm"/></svg>Thundery showers</td><td>24–33°</td></tr>
+            <tr><td>Wed</td><td><svg class="i"><use href="#i-rain"/></svg>Showers</td><td>25–33°</td></tr>
+            <tr><td>Thu</td><td><svg class="i"><use href="#i-partsun"/></svg>Partly cloudy</td><td>25–34°</td></tr>
+          </table>
+        </div>
+      </section>
+
+      <div class="parked">
+        <span class="pi">P</span>
+        <div class="tx"><b>Parked · Blk 135A Teck Whye</b><small>Deck 4B · $0.84 so far (est.)</small></div>
+        <span class="tm">42m</span>
+      </div>
+      <nav class="nav">
+        <a><svg class="i lg"><use href="#i-park"/></svg>Parking</a>
+        <a><svg class="i lg"><use href="#i-bolt"/></svg>EV</a>
+        <a><svg class="i lg"><use href="#i-cctv"/></svg>Roads</a>
+        <a class="on"><svg class="i lg"><use href="#i-rain"/></svg>Weather</a>
+      </nav>
+      <div class="ad"><b>AD</b>Adaptive banner · collapses when empty</div><div class="base"></div>
+    </div>
+  </div>
+  <figcaption><strong>4 · Weather: radar, then a short board</strong>The NEA rain radar loops over the map. Underneath, one big statement for right now, then a short board: next 2 hours and the next days (scroll for all four). The yellow <b>Parked</b> plate follows you on every tab.</figcaption>
+</figure>
+
+</main>
+
+<section class="notes">
+  <div class="note"><h2>What makes Gantry different</h2><ul>
+    <li><strong>Tall condensed numerals</strong> (Barlow Condensed) for lots, minutes and prices: the most glanceable option.</li>
+    <li><strong>Sign plates</strong> for pins, search and the parked bar give a distinctive, ownable look.</li>
+    <li><strong>Camera wall</strong>: all 8 cameras in two columns, with a departure board for checkpoint times.</li>
+  </ul></div>
+  <div class="note"><h2>Review changes included</h2><ul>
+    <li>Tabs: <strong>Parking · EV · Roads · Weather</strong>, with a bolt for EV and a CCTV icon for Roads.</li>
+    <li>EV tab can be hidden in Settings.</li>
+    <li>One in-feed ad after the first two cameras, plus the bottom banner.</li>
+    <li>Lean Weather: now, next 2 hours, next days.</li>
+  </ul></div>
+  <div class="note"><h2>Trade-offs</h2><ul>
+    <li>Uppercase condensed text is harder to read in long names, so names stay in normal case.</li>
+    <li>Strong black and yellow may feel heavy to some users; the dark theme suits it best.</li>
+    <li>Must stay clearly original: no LTA sign shapes, colours or typefaces copied.</li>
+  </ul></div>
+</section>
+<p class="disclaimer">Visual direction only. Map: © OpenFreeMap, © OpenMapTiles, data © OpenStreetMap contributors. Carpark lots are real HDB data (data.gov.sg) captured 26 Oct 2026. Camera images: LTA via data.gov.sg (26 Oct 2026, 5:36 pm). Radar: NEA (25 Oct 2026, 5:00 pm). EV chargers, prices, travel times, gauge reading and the parked session are sample data.</p>
+<script src="shared/chrome.js"></script>
+</body>
+</html>

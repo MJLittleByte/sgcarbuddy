@@ -1,0 +1,43 @@
+# --- Secrets: never commit ---
+.env
+.env.*
+!.env.example
+!.env.production.example
+# Public Worker URL for release builds (written by `npm run setup`): safe to commit.
+!mobile/.env.production
+.dev.vars
+.dev.vars.*
+*.keystore
+*.jks
+keystore.properties
+
+# --- Node / build ---
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.wrangler/
+
+# --- Android (Capacitor) ---
+mobile/android/.gradle/
+mobile/android/build/
+mobile/android/app/build/
+mobile/android/capacitor-cordova-android-plugins/build/
+mobile/android/local.properties
+mobile/android/.idea/
+*.apk
+*.aab
+
+# --- Third-party app screenshots used for the UX review (not ours to publish) ---
+reference_app_screenshots/
+
+# --- OS / editors ---
+.DS_Store
+.idea/
+.vscode/
+
+# Built privacy / support site (site/build.mjs)
+site/_site/
+
+# Release signing (kept outside the repo; see mobile/scripts/create-keystore.sh)
+mobile/android/keystore.properties

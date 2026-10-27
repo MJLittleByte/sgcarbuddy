@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- SG Car Buddy brand blue -->
+    <color name="ic_launcher_background">#1A56DB</color>
+    <color name="splash_background">#1A56DB</color>
+    <color name="brand_accent">#4BE3FF</color>
+</resources>

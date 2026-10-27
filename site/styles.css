@@ -1,0 +1,40 @@
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --line: #e1e6ec;
+  --ink: #0f1729; --muted: #556175;
+  --brand: #1a56db; --brand-ink: #1543b0; --brand-soft: #e7eeff;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #060a14; --surface: #0d1323; --line: #1f2940;
+    --ink: #eef2ff; --muted: #a3acc6;
+    --brand: #4be3ff; --brand-ink: #8eefff; --brand-soft: #0f2333;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+a { color: var(--brand-ink); }
+a:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 2px; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 24px 20px 48px; }
+header.site { display: flex; align-items: center; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+header.site img { width: 44px; height: 44px; }
+header.site .name { font-weight: 800; font-size: 1.25rem; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+header.site nav { margin-left: auto; display: flex; gap: 16px; font-size: 0.95rem; }
+main { padding-top: 8px; }
+h1 { font-size: 2rem; line-height: 1.2; margin: 24px 0 8px; letter-spacing: -0.02em; }
+h2 { font-size: 1.25rem; margin: 32px 0 8px; }
+h3 { font-size: 1.05rem; margin: 20px 0 4px; }
+.meta { color: var(--muted); margin: 0 0 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; margin: 16px 0; }
+.summary { background: var(--brand-soft); border-color: transparent; }
+.summary ul { margin: 8px 0 0; padding-left: 20px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 10px 8px; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); font-weight: 600; }
+.table-scroll { overflow-x: auto; }
+.features { padding-left: 20px; }
+footer.site { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.875rem; }

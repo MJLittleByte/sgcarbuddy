@@ -1,0 +1,95 @@
+/* SG Car Buddy concept boards: presentation chrome shared by all concepts.
+   Each concept file owns its app tokens (scoped to .phone). Adapted from SG BusXing's board.css. */
+:root {
+  --page-bg: #e4e6ea;
+  --page-ink: #14171c;
+  --page-muted: #59616d;
+  --page-line: #cdd2d8;
+  --page-card: #f4f5f7;
+}
+html.page-dark {
+  --page-bg: #0c0e11;
+  --page-ink: #eceff3;
+  --page-muted: #98a1ad;
+  --page-line: #262b33;
+  --page-card: #15181d;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--page-ink);
+  font: 15px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; }
+
+.board-head {
+  max-width: 1780px; margin: 0 auto; padding: 40px 40px 8px;
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap;
+}
+.board-head h1 { margin: 6px 0 8px; font-size: 40px; line-height: 1.1; letter-spacing: -.025em; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--page-muted); }
+.lede { margin: 0; max-width: 82ch; color: var(--page-muted); }
+.lede b { color: var(--page-ink); }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
+.toolbar a, .toolbar button {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px;
+  border: 1px solid var(--page-line); border-radius: 999px; background: var(--page-card);
+  color: var(--page-ink); text-decoration: none; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.toolbar a:hover, .toolbar button:hover { border-color: var(--page-muted); }
+
+.devices {
+  max-width: 1780px; margin: 0 auto; padding: 36px 40px 16px;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 56px 44px;
+}
+.device { margin: 0; width: 390px; }
+.device figcaption { margin-top: 30px; font-size: 14px; color: var(--page-muted); }
+.device figcaption strong { display: block; margin-bottom: 4px; color: var(--page-ink); font-size: 15px; }
+
+/* Device shell: 390 × 844 CSS px, Android punch-hole and gesture bar.
+   Map screens are edge-to-edge: .scr fills the whole phone, the status bar floats on top. */
+.phone {
+  position: relative; width: 390px; height: 844px; overflow: hidden; isolation: isolate;
+  border-radius: 50px; background: var(--bg); color: var(--ink);
+  box-shadow: 0 0 0 11px #0a0b0d, 0 0 0 12px #3b3f45, 0 50px 90px -30px rgba(0,0,0,.55);
+}
+.phone > .scr { position: absolute; inset: 0; }
+.statusbar {
+  position: absolute; inset: 0 0 auto; z-index: 40; height: 46px; padding: 10px 30px 0;
+  display: flex; justify-content: space-between; align-items: center;
+  font: 600 15px/1 system-ui, sans-serif; color: var(--status-ink, var(--ink));
+}
+.statusbar .sb-icons { display: flex; gap: 6px; align-items: center; }
+.statusbar svg { display: block; fill: currentColor; }
+.punch { position: absolute; top: 14px; left: 50%; z-index: 41; width: 13px; height: 13px; margin-left: -6px; border-radius: 50%; background: #050505; }
+.gesture { position: absolute; bottom: 7px; left: 50%; z-index: 41; width: 132px; height: 5px; margin-left: -66px; border-radius: 3px; background: var(--gesture, var(--ink)); opacity: .45; }
+
+/* Static map render (OpenFreeMap tiles via MapLibre) as the edge-to-edge background */
+.map { position: absolute; inset: 0; background: var(--map-bg, #ddd) center / 390px 844px no-repeat; }
+.map .attr { position: absolute; right: 8px; font: 500 9px/1 system-ui, sans-serif; color: var(--ink); opacity: .55; }
+
+/* Pins are positioned at real projected coordinates: --x / --y = the point on the map */
+.pin { position: absolute; left: var(--x); top: var(--y); }
+
+.i { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.i.sm { width: 16px; height: 16px; }
+.i.xs { width: 13px; height: 13px; stroke-width: 2.1; }
+.i.lg { width: 24px; height: 24px; }
+.i.xl { width: 28px; height: 28px; }
+.i.fill { fill: currentColor; stroke: none; }
+
+/* Board notes beneath the devices */
+.notes {
+  max-width: 1600px; margin: 24px auto 64px; padding: 0 40px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;
+}
+.note { padding: 22px 24px; border: 1px solid var(--page-line); border-radius: 16px; background: var(--page-card); }
+.note h2 { margin: 0 0 10px; font-size: 16px; letter-spacing: -.01em; }
+.note ul { margin: 0; padding-left: 18px; color: var(--page-muted); }
+.note li + li { margin-top: 6px; }
+.note li strong { color: var(--page-ink); }
+.disclaimer { max-width: 1600px; margin: -40px auto 48px; padding: 0 40px; font-size: 13px; color: var(--page-muted); }
+
+@media print { .toolbar { display: none; } }

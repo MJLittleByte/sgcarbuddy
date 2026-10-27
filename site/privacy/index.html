@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en-SG">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Policy · {{appName}}</title>
+  <meta name="description" content="Privacy policy for the {{appName}} Android app ({{packageName}}).">
+  <link rel="canonical" href="{{siteUrl}}privacy/">
+  <link rel="icon" href="../icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <img src="../icon.svg" alt="" width="44" height="44">
+    <a class="name" href="../">{{appName}}</a>
+    <nav aria-label="Site"><a href="../">Home</a><a href="./" aria-current="page">Privacy</a></nav>
+  </header>
+
+  <main>
+    <h1>Privacy Policy</h1>
+    <p class="meta">Effective {{policyEffectiveDate}} · applies to the {{appName}} app for Android (<code>{{packageName}}</code>)</p>
+
+    <div class="card summary">
+      <strong>In short</strong>
+      <ul>
+        <li>No account, no sign-in, no name, email or phone number asked.</li>
+        <li>Your location is used <strong>on your phone only</strong> and is never sent to our server. The app downloads
+          island-wide data and matches it to your location on the phone.</li>
+        <li>Your parked car, saved places, reminders and settings stay on your phone.</li>
+        <li>The current version has no ads, no analytics, no tracking and no crash-reporting SDKs. We do not sell personal data.</li>
+        <li>To keep the app free, a future version may show ads from Google AdMob. What that changes is explained in
+          <a href="#ads">section 6</a>, and this policy will be updated before that version is released.</li>
+      </ul>
+    </div>
+
+    <h2>1. Who we are</h2>
+    <p>{{appName}} is an independent Singapore driving companion made by {{developerName}} (“we”, “us”). It is not
+      affiliated with the Land Transport Authority (LTA), the Housing &amp; Development Board (HDB), the Urban
+      Redevelopment Authority (URA), the National Environment Agency (NEA), PUB, the Singapore Land Authority (SLA) or any
+      charging operator. Questions about this policy: <a href="mailto:{{contactEmail}}">{{contactEmail}}</a>.</p>
+
+    <h2>2. Information that stays on your phone</h2>
+    <p>The following is stored only in the app’s private storage on your device. We cannot see it.</p>
+    <ul>
+      <li><strong>Your vehicle type</strong> (car, electric car with plug types, or motorcycle) and settings such as theme,
+        walking pace, navigation app and filters.</li>
+      <li><strong>Saved places</strong> (for example Home and Work), saved carparks and chargers, and recent searches.</li>
+      <li><strong>Your parked car</strong>: where and when you parked, any note you type (such as the deck or lot), and the
+        reminders you set.</li>
+      <li><strong>Cached public data</strong> (the carpark list and the latest free-lot counts) so the app opens quickly,
+        including with a weak signal.</li>
+    </ul>
+    <p>If Android backup is turned on for your Google account, Android may include this app data in your device backup,
+      which is handled by Google under <a href="https://policies.google.com/privacy">Google’s Privacy Policy</a>, not by us.
+      Uninstalling the app or using <em>Settings → Apps → {{appName}} → Storage → Clear storage</em> deletes it.</p>
+
+    <h2>3. Location</h2>
+    <p>The app asks for location permission only when you use a feature that needs it (carparks and chargers near you,
+      walking time, road alerts and rain near you, saving where you parked). You can refuse, or choose approximate
+      location, and search for a place instead.</p>
+    <ul>
+      <li>Your position is processed <strong>on the device</strong> to sort carparks and chargers, estimate walking time,
+        pick road alerts within 4 km and find the nearest rain gauge.</li>
+      <li>Your coordinates are <strong>never sent</strong> to our server or stored by us. The app uses location only while
+        you use it (no background location).</li>
+      <li>When the map is shown, the map provider receives requests for the map tiles of the area on screen, which may
+        reveal the general area you are looking at (see section 4).</li>
+    </ul>
+    <p>You can turn location off at any time in <em>Android Settings → Apps → {{appName}} → Permissions</em>.</p>
+
+    <h2>4. Information sent over the internet</h2>
+    <p>To show live information, the app connects to the services below. Like every internet request, each one
+      receives your device’s <strong>IP address</strong> and basic technical details (such as the app’s user agent) as
+      part of the connection. None of these requests contains your name, account, contacts, advertising ID or location
+      coordinates.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Service</th><th>What the app sends</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Our API</strong>, hosted on <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare Workers</a></td>
+            <td>Requests for island-wide data (carpark list and free lots, EV charger status, road alerts, traffic
+              cameras, rain radar) and the place-search text you type (e.g. “Bishan MRT”).</td>
+            <td>Fetches the data from <a href="https://datamall.lta.gov.sg/">LTA DataMall</a>,
+              <a href="https://data.gov.sg/">data.gov.sg</a> (HDB, NEA, PUB), URA and place search from
+              <a href="https://www.onemap.gov.sg/">OneMap</a> (SLA). Our server makes those calls, so those providers do
+              not see your IP address.</td>
+          </tr>
+          <tr>
+            <td><a href="https://data.gov.sg/">data.gov.sg</a> (Government of Singapore)</td>
+            <td>Requests for the national weather forecast, rainfall and temperature readings, and the traffic-camera list.
+              No location is sent; the app picks the nearest area on your phone.</td>
+            <td>Rain near you and the forecast.</td>
+          </tr>
+          <tr>
+            <td>LTA traffic-camera images (hosted on Amazon Web Services)</td>
+            <td>Requests for the latest camera images.</td>
+            <td>Showing the checkpoint cameras.</td>
+          </tr>
+          <tr>
+            <td><a href="https://openfreemap.org/">OpenFreeMap</a></td>
+            <td>Requests for map tiles of the area shown on screen.</td>
+            <td>Drawing the map.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>When you tap <strong>Navigate</strong> or <strong>Show on Google Maps</strong>, the app opens Google Maps or Waze
+      with that destination. When you <strong>share</strong> a carpark, Android’s share sheet sends what you choose to the
+      app you pick. Those apps handle the information under their own privacy policies.</p>
+
+    <h3>What our server keeps</h3>
+    <ul>
+      <li><strong>Request logs:</strong> Cloudflare keeps short-lived operational logs (request time, path such as
+        <code>/v1/carparks/availability</code>, status and IP address) so we can fix errors and stop abuse. These are kept
+        for a few days under Cloudflare’s standard retention and then deleted automatically. We do not combine them with
+        any other data or use them to identify you.</li>
+      <li><strong>Rate limiting:</strong> your IP address is counted for about one minute to block excessive traffic.</li>
+      <li><strong>Shared cache:</strong> public responses (free lots, chargers, cameras, place-search results) are cached
+        for everyone, keyed by the data set or search text, for up to 7 days. The cache does not record who asked.</li>
+    </ul>
+
+    <h2>5. Notifications</h2>
+    <p>If you save where you parked and turn on reminders, the app schedules them <strong>on your phone</strong> (for
+      example “Free parking ends at 10:30 pm”). No push server is involved and nothing about your parking is sent to us.
+      You can turn notifications off in Android Settings at any time.</p>
+
+    <h2 id="ads">6. Advertising (planned)</h2>
+    <p><strong>The current version of {{appName}} shows no ads</strong> and contains no advertising code. To keep the
+      app free, we may add ads in a future version:</p>
+    <ul>
+      <li><strong>A banner</strong> at the bottom of the main screens and at most one ad in the camera feed. No full-screen
+        ads, and never inside the full-screen camera viewer.</li>
+      <li>Ads would be provided by <strong>Google AdMob</strong>. When ads are shown, the AdMob SDK collects and shares with
+        Google: your device’s <strong>advertising ID</strong>, IP address (from which an approximate location can be
+        derived), device and app information, and how you interact with ads. Google uses this to serve ads, measure
+        them and prevent fraud, as described in
+        <a href="https://policies.google.com/technologies/partner-sites">How Google uses information from sites or apps
+        that use its services</a> and <a href="https://policies.google.com/privacy">Google’s Privacy Policy</a>.</li>
+      <li>Where the law requires it (for example in the EU, UK and Switzerland), the app will ask for your consent before
+        showing personalised ads. Without consent you will see non-personalised ads.</li>
+      <li>Your parked car, saved places, settings and location coordinates will still stay on your phone and will not be
+        given to advertisers by us.</li>
+    </ul>
+    <p>Before releasing a version with ads, we will update this policy and its effective date, the app’s Google Play
+      Data safety section and its “Contains ads” label.</p>
+
+    <h2>7. Security</h2>
+    <p>All connections from the app use HTTPS (encrypted in transit). Our data-provider keys are kept on the server and
+      are not built into the app.</p>
+
+    <h2>8. Your choices and rights</h2>
+    <ul>
+      <li>Deny or revoke location or notification permission at any time; the rest of the app keeps working.</li>
+      <li>Delete all app data by clearing the app’s storage or uninstalling the app. Because we hold no account or
+        profile, there is nothing else to delete on our side; short-lived server logs expire automatically.</li>
+      <li>Under Singapore’s Personal Data Protection Act 2012 (PDPA) and similar laws, you may ask us about personal data
+        we hold about you, or ask us to correct or delete it, by emailing
+        <a href="mailto:{{contactEmail}}">{{contactEmail}}</a>. We will reply within 30 days.</li>
+    </ul>
+
+    <h2>9. Children</h2>
+    <p>The app is a general-audience driving tool and is not directed at children under 13. We do not knowingly collect
+      personal data from children.</p>
+
+    <h2>10. Data sources and attribution</h2>
+    <p>Carpark availability, EV charging points, traffic cameras, incidents and travel times: Land Transport Authority,
+      via LTA DataMall. HDB carpark information, weather, rain radar and flood alerts: HDB, NEA and PUB via data.gov.sg.
+      Place search: OneMap, Singapore Land Authority. These are used under the
+      <a href="https://data.gov.sg/open-data-licence">Singapore Open Data Licence</a>. Map tiles by OpenFreeMap ©
+      OpenMapTiles; map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>.
+      Parking costs are estimates from published HDB and URA rates; always check the signs at the carpark.</p>
+
+    <h2>11. Changes to this policy</h2>
+    <p>If this policy changes, we will update this page and the effective date above. Significant changes will also be
+      noted in the app’s release notes on Google Play.</p>
+
+    <h2>12. Contact</h2>
+    <p>{{developerName}} · <a href="mailto:{{contactEmail}}">{{contactEmail}}</a></p>
+  </main>
+
+  <footer class="site">
+    © {{year}} {{developerName}} · {{appName}} v{{appVersion}} · <a href="./">Privacy Policy</a>
+  </footer>
+</div>
+</body>
+</html>

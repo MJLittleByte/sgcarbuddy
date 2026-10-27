@@ -1,0 +1,21 @@
+{
+  // SG Car Buddy API on Cloudflare's edge. Holds the LTA DataMall AccountKey so it never ships in the app.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sgcarbuddy-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "observability": { "enabled": true },
+
+  // Non-secret configuration. Secrets (LTA_ACCOUNT_KEY, DATAGOVSG_API_KEY, ONEMAP_*) are NOT set here:
+  //   local dev  -> worker/.env.local         (gitignored; copy .env.example)
+  //   production -> npm run deploy:prod       (uploads them from .env.production via `wrangler secret bulk`)
+  "vars": {
+    "ALLOWED_ORIGINS": "https://localhost,capacitor://localhost,http://localhost,http://localhost:5173,http://127.0.0.1:5173"
+  },
+
+  // Basic abuse protection: 120 requests / 60 s per client IP. Namespace ids are per Cloudflare account:
+  // 1001 is SG BusXing's, so this app uses its own counter.
+  "ratelimits": [
+    { "name": "RATE_LIMITER", "namespace_id": "1002", "simple": { "limit": 120, "period": 60 } }
+  ]
+}

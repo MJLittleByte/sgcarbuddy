@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en" data-default-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SG Car Buddy · Concept C · Night Drive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/board.css">
+<style>
+/* ===== Concept C · Night Drive tokens (dark is the hero theme) ===== */
+html[data-theme=dark] .phone, .phone {
+  --bg:#060a14; --glass:rgba(13,19,35,.74); --glass-2:rgba(255,255,255,.06); --glass-strong:rgba(10,15,29,.9); --glass-line:rgba(255,255,255,.10);
+  --ink:#eef2ff; --muted:#9aa3bf; --faint:#5f6886;
+  --accent:#4be3ff; --accent-2:#8b7bff; --on-accent:#05101c;
+  --grad:linear-gradient(135deg,#4be3ff 0%,#8b7bff 100%);
+  --plenty:#2ff59a; --limited:#ffc94a; --few:#ff5c7a; --none:#6b7491;
+  --rain:#6fc3ff; --glow:.55;
+  --map-tw:url(assets/maps/tw-fiord.jpg); --map-sg:url(assets/maps/sg-fiord.jpg);
+  --map-fade:rgba(6,10,20,.85);
+  font-family:"Manrope",system-ui,sans-serif; font-size:15px; line-height:1.35;
+}
+html[data-theme=light] .phone {
+  --bg:#eef1f8; --glass:rgba(255,255,255,.76); --glass-2:rgba(15,23,42,.05); --glass-strong:rgba(255,255,255,.92); --glass-line:rgba(15,23,42,.09);
+  --ink:#0b1020; --muted:#556080; --faint:#98a0b6;
+  --accent:#0a9cc0; --accent-2:#6a5cff; --on-accent:#fff;
+  --grad:linear-gradient(135deg,#0aa9cf 0%,#6a5cff 100%);
+  --plenty:#0aa463; --limited:#d08a00; --few:#e0365a; --none:#8d95ab;
+  --rain:#1f7ae0; --glow:.25;
+  --map-tw:url(assets/maps/tw-bright.jpg); --map-sg:url(assets/maps/sg-bright.jpg);
+  --map-fade:rgba(238,241,248,.85);
+}
+:where(.phone button) { border:0; background:none; padding:0; cursor:pointer; font:inherit; color:inherit; text-align:inherit; }
+.sg { font-family:"Space Grotesk",sans-serif; font-variant-numeric:tabular-nums; }
+.glass { background:var(--glass); backdrop-filter:blur(18px) saturate(1.4); -webkit-backdrop-filter:blur(18px) saturate(1.4); box-shadow:inset 0 0 0 1px var(--glass-line), 0 10px 30px rgba(0,0,0,.28); }
+
+.fade { position:absolute; inset:0 0 auto; height:160px; background:linear-gradient(var(--map-fade), transparent); }
+.top { position:absolute; left:12px; right:12px; top:52px; z-index:10; display:flex; flex-direction:column; gap:8px; }
+.search { display:flex; align-items:center; gap:12px; height:52px; padding:0 6px 0 18px; border-radius:26px; color:var(--muted); font-size:16px; }
+.search span { flex:1; }
+.search .ib { display:grid; place-items:center; width:40px; height:40px; border-radius:50%; background:var(--glass-2); color:var(--ink); }
+.chips { display:flex; gap:6px; }
+.chip { display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 12px; border-radius:16px; font-size:13px; font-weight:700; color:var(--ink); white-space:nowrap; }
+.chip .i { width:15px; height:15px; }
+.chip .dotc { width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px var(--accent); }
+.chip.on { box-shadow:inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 70%, transparent), 0 10px 30px rgba(0,0,0,.28); }
+.chip.wx { margin-left:auto; }
+.chip.wx .i { color:var(--rain); }
+
+/* pins: glowing orbs */
+.orb { position:absolute; left:var(--x); top:var(--y); transform:translate(-50%,-50%); display:grid; place-items:center; min-width:38px; height:38px; padding:0 8px; border-radius:19px; background:var(--glass-strong); color:var(--ink); box-shadow:inset 0 0 0 2.5px var(--lvl), 0 0 18px color-mix(in srgb, var(--lvl) calc(var(--glow) * 100%), transparent); font:700 14px/1 "Space Grotesk",sans-serif; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.orb .i { width:12px; height:12px; color:var(--lvl); margin-right:2px; }
+.orb.ev { display:flex; align-items:center; gap:2px; }
+.orb.sel { min-width:52px; height:52px; padding:0 12px; border-radius:26px; font-size:19px; background:var(--glass-strong); box-shadow:0 0 0 3px transparent, inset 0 0 0 3px var(--lvl), 0 0 0 6px color-mix(in srgb, var(--lvl) 22%, transparent), 0 0 30px color-mix(in srgb, var(--lvl) calc(var(--glow) * 120%), transparent); z-index:3; }
+.orb .lab { position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); padding:5px 10px; border-radius:10px; background:var(--glass-strong); box-shadow:inset 0 0 0 1px var(--glass-line); font:700 12px/1 "Manrope",sans-serif; color:var(--ink); white-space:nowrap; }
+.spark { position:absolute; left:var(--x); top:var(--y); width:10px; height:10px; margin:-5px 0 0 -5px; border-radius:50%; background:var(--lvl); box-shadow:0 0 10px var(--lvl); }
+.plenty { --lvl:var(--plenty); } .limited { --lvl:var(--limited); } .few { --lvl:var(--few); } .none { --lvl:var(--none); }
+.me { position:absolute; left:var(--x); top:var(--y); width:16px; height:16px; margin:-8px 0 0 -8px; border-radius:50%; background:#fff; box-shadow:0 0 0 4px var(--accent), 0 0 0 14px color-mix(in srgb, var(--accent) 20%, transparent), 0 0 24px var(--accent); }
+.fab { position:absolute; right:12px; z-index:9; display:grid; place-items:center; width:46px; height:46px; border-radius:50%; color:var(--accent); }
+
+/* floating sheet */
+.sheet { position:absolute; left:8px; right:8px; z-index:12; display:flex; flex-direction:column; border-radius:28px; overflow:hidden; }
+.handle { flex:none; width:38px; height:5px; margin:8px auto 4px; border-radius:3px; background:var(--glass-line); }
+.sh-head { flex:none; display:flex; align-items:center; justify-content:space-between; padding:2px 16px 8px; }
+.sh-head h2 { margin:0; font:700 20px/1.1 "Space Grotesk",sans-serif; letter-spacing:-.02em; }
+.sh-head p { margin:3px 0 0; display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--muted); }
+.live { width:7px; height:7px; border-radius:50%; background:var(--plenty); box-shadow:0 0 8px var(--plenty); }
+.ctrls { flex:none; display:flex; gap:6px; padding:0 16px 10px; }
+.ctl { display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 12px; border-radius:16px; background:var(--glass-2); box-shadow:inset 0 0 0 1px var(--glass-line); font-size:12.5px; font-weight:700; white-space:nowrap; }
+.ctl .i { width:14px; height:14px; color:var(--muted); }
+.ctl.on { background:var(--grad); color:var(--on-accent); box-shadow:none; }
+.ctl.on .i { color:var(--on-accent); }
+.rows { flex:1; margin:0; padding:0 8px; list-style:none; overflow:hidden; display:flex; flex-direction:column; gap:6px; }
+.row { display:grid; grid-template-columns:58px 1fr auto; gap:12px; align-items:center; padding:9px 10px; border-radius:20px; background:var(--glass-2); }
+.row.sel { box-shadow:inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 60%, transparent); background:color-mix(in srgb, var(--accent) 8%, transparent); }
+.ring { position:relative; width:56px; height:56px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; }
+.ring svg { position:absolute; inset:0; transform:rotate(-90deg); }
+.ring circle { fill:none; stroke-width:5; }
+.ring .bg { stroke:var(--glass-line); }
+.ring .fg { stroke:var(--lvl); stroke-linecap:round; filter:drop-shadow(0 0 4px color-mix(in srgb, var(--lvl) calc(var(--glow) * 100%), transparent)); }
+.ring b { font:700 17px/1 "Space Grotesk",sans-serif; font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
+.ring small { position:relative; font-size:9px; line-height:1; font-weight:700; color:var(--muted); }
+.ring b { position:relative; }
+.rt { min-width:0; display:flex; flex-direction:column; gap:3px; }
+.rt > b { font-size:15px; font-weight:750; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.meta { display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--muted); white-space:nowrap; }
+.meta .i { width:13px; height:13px; }
+.facts { display:flex; gap:4px; overflow:hidden; }
+.facts em { display:inline-flex; align-items:center; gap:3px; height:20px; padding:0 7px; border-radius:10px; background:var(--glass-2); box-shadow:inset 0 0 0 1px var(--glass-line); font-style:normal; font-size:11px; font-weight:700; color:var(--muted); white-space:nowrap; }
+.facts em .i { width:11px; height:11px; }
+.facts em.ev { color:var(--plenty); }
+.facts em.warn { color:var(--limited); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--limited) 50%, transparent); }
+.cost { text-align:right; }
+.cost b { display:block; font:700 17px/1.1 "Space Grotesk",sans-serif; font-variant-numeric:tabular-nums; }
+.cost small { font-size:11px; font-weight:600; color:var(--muted); }
+
+/* floating nav + ad */
+.nav { position:absolute; left:14px; right:14px; bottom:82px; z-index:20; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 7px; border-radius:30px; }
+.nav a { display:flex; align-items:center; justify-content:center; gap:7px; height:46px; min-width:46px; padding:0 13px; border-radius:23px; color:var(--muted); text-decoration:none; font-size:13.5px; font-weight:800; }
+.nav a.on { background:var(--grad); color:var(--on-accent); padding:0 16px 0 14px; box-shadow:0 0 22px color-mix(in srgb, var(--accent) calc(var(--glow) * 80%), transparent); }
+.ad { position:absolute; left:0; right:0; bottom:22px; z-index:20; height:50px; display:flex; align-items:center; justify-content:center; gap:10px; background:var(--glass-strong); border-top:1px solid var(--glass-line); font-size:12px; color:var(--faint); }
+.ad b, .adl { padding:2px 6px; border-radius:5px; background:var(--glass-2); box-shadow:inset 0 0 0 1px var(--glass-line); color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.06em; }
+.base { position:absolute; left:0; right:0; bottom:0; height:22px; z-index:19; background:var(--glass-strong); }
+
+/* Roads: immersive cards */
+.grps { flex:none; display:flex; gap:6px; padding:0 14px 10px; }
+.grps button { display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 12px; border-radius:16px; background:var(--glass-2); box-shadow:inset 0 0 0 1px var(--glass-line); font-size:12.5px; font-weight:700; }
+.grps button small { color:var(--muted); font-weight:700; }
+.grps button.on { background:var(--grad); color:var(--on-accent); box-shadow:none; }
+.grps button.on small { color:var(--on-accent); opacity:.7; }
+.stream { flex:1; overflow:hidden; position:relative; }
+.stream-in { position:absolute; left:6px; right:6px; top:-112px; display:flex; flex-direction:column; gap:8px; }
+.shot { position:relative; flex:none; aspect-ratio:16/9; border-radius:20px; background:#111 center / cover; overflow:hidden; }
+.shot .ov { position:absolute; left:8px; right:8px; bottom:8px; display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:14px; background:rgba(8,12,24,.62); backdrop-filter:blur(10px); color:#fff; }
+.shot .ov b { font-size:14px; font-weight:800; }
+.shot .ov small { display:block; font-size:11.5px; color:#c3c9dc; }
+.shot .ov .ts { margin-left:auto; display:inline-flex; align-items:center; gap:6px; font:600 12px/1 "Space Grotesk",sans-serif; }
+.shot .tt { position:absolute; left:8px; top:8px; display:inline-flex; align-items:center; gap:6px; height:28px; padding:0 10px; border-radius:14px; background:rgba(8,12,24,.62); backdrop-filter:blur(10px); color:#fff; font:700 12.5px/1 "Space Grotesk",sans-serif; }
+.shot .tt i { width:7px; height:7px; border-radius:50%; background:#ffc94a; box-shadow:0 0 8px #ffc94a; }
+.shot.adshot { display:grid; place-items:center; background:repeating-linear-gradient(135deg, var(--glass-2) 0 14px, transparent 14px 28px); box-shadow:inset 0 0 0 1.5px var(--glass-line); color:var(--muted); font-size:13px; font-weight:700; text-align:center; }
+.shot.adshot > div { display:flex; flex-direction:column; align-items:center; gap:6px; }
+
+/* Weather */
+.radar { position:absolute; left:-214px; top:-227.7px; width:1090.8px; height:1090.6px; opacity:.8; mix-blend-mode:screen; }
+html[data-theme=light] .radar { mix-blend-mode:multiply; opacity:.65; }
+.rctl { position:absolute; left:12px; right:12px; z-index:11; display:flex; align-items:center; gap:12px; height:54px; padding:0 16px 0 7px; border-radius:27px; }
+.rctl .play { display:grid; place-items:center; width:40px; height:40px; border-radius:50%; background:var(--grad); color:var(--on-accent); }
+.rctl .tl { flex:1; display:flex; flex-direction:column; gap:6px; }
+.rctl .tl b { display:flex; justify-content:space-between; font:700 14px/1 "Space Grotesk",sans-serif; }
+.rctl .tl b span { font:600 12px/1 "Manrope",sans-serif; color:var(--muted); }
+.wave { display:flex; align-items:flex-end; gap:3px; height:12px; }
+.wave i { flex:1; border-radius:2px; background:var(--glass-line); }
+.wave i.p { background:color-mix(in srgb, var(--accent) 45%, transparent); }
+.wave i.c { background:var(--accent); box-shadow:0 0 8px var(--accent); }
+.wxh { display:flex; align-items:center; gap:14px; padding:4px 16px 10px; }
+.wxh .big { font:600 46px/1 "Space Grotesk",sans-serif; letter-spacing:-.04em; }
+.wxh h2 { margin:0; font:700 19px/1.15 "Space Grotesk",sans-serif; }
+.wxh p { margin:3px 0 0; font-size:12.5px; color:var(--muted); }
+.wxh .ico { margin-left:auto; display:grid; place-items:center; width:46px; height:46px; border-radius:50%; background:color-mix(in srgb, var(--rain) 18%, transparent); color:var(--rain); box-shadow:0 0 22px color-mix(in srgb, var(--rain) 35%, transparent); }
+.nx { display:flex; align-items:center; gap:10px; margin:0 8px; padding:10px 12px; border-radius:18px; background:var(--glass-2); }
+.nx .i { color:var(--rain); }
+.nx b { font-size:14px; } .nx small { display:block; font-size:12px; color:var(--muted); }
+.d4 { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin:8px 8px 0; }
+.d4 div { display:flex; flex-direction:column; align-items:center; gap:4px; padding:8px 0; border-radius:16px; background:var(--glass-2); font-size:12px; font-weight:800; }
+.d4 div .i { color:var(--muted); width:18px; height:18px; }
+.d4 small { font:600 11.5px/1 "Space Grotesk",sans-serif; color:var(--muted); }
+.parked { position:absolute; left:14px; right:14px; bottom:150px; z-index:21; display:flex; align-items:center; gap:10px; height:50px; padding:0 14px 0 6px; border-radius:25px; }
+.parked .pi { display:grid; place-items:center; width:38px; height:38px; border-radius:50%; background:var(--grad); color:var(--on-accent); font:700 18px/1 "Space Grotesk",sans-serif; }
+.parked .tx { flex:1; display:flex; flex-direction:column; line-height:1.2; }
+.parked .tx b { font-size:13.5px; } .parked .tx small { font-size:11.5px; color:var(--muted); }
+.parked .tm { font:700 17px/1 "Space Grotesk",sans-serif; }
+</style>
+</head>
+<body>
+<header class="board-head">
+  <div>
+    <div class="eyebrow">SG Car Buddy · Concept C of 3</div>
+    <h1>Night Drive: dark-first, glass and glow</h1>
+    <p class="lede">A premium, modern take built for evening drives. A deep-navy map, frosted glass controls, and pins as glowing orbs whose ring colour shows availability. Rows use a ring gauge (how full the carpark is) with the free lots inside. A floating pill nav and a floating sheet keep more of the map visible. Toggle to see the light version.</p>
+  </div>
+  <div class="toolbar">
+    <a href="index.html"><svg class="i sm"><use href="#i-left"/></svg>All concepts</a>
+    <button type="button" data-theme-toggle><span data-theme-label>Show light theme</span></button>
+  </div>
+</header>
+
+<main class="devices">
+
+<!-- ============ 1 · PARKING ============ -->
+<figure class="device">
+  <div class="phone" data-time="5:42">
+    <div class="scr">
+      <div class="map" style="background-image:var(--map-tw)"></div>
+      <div class="fade"></div>
+
+      <div class="orb plenty" style="--x:38.8px;--y:275.5px">393</div>
+      <div class="orb plenty" style="--x:44.2px;--y:334px">104</div>
+      <div class="orb limited" style="--x:81.2px;--y:176.2px">23</div>
+      <div class="spark limited" style="--x:127.8px;--y:210.2px"></div>
+      <div class="orb plenty" style="--x:130.5px;--y:291.3px">188</div>
+      <div class="spark few" style="--x:149.7px;--y:232.6px"></div>
+      <div class="spark none" style="--x:219.4px;--y:230.2px"></div>
+      <div class="spark limited" style="--x:244.8px;--y:193.8px"></div>
+      <div class="orb plenty" style="--x:246.9px;--y:173.8px">178</div>
+      <div class="spark none" style="--x:185.1px;--y:165.2px"></div>
+      <div class="orb plenty" style="--x:337px;--y:220.3px">124</div>
+      <div class="orb plenty" style="--x:335.1px;--y:324.5px">133</div>
+      <div class="orb plenty" style="--x:301.5px;--y:400px">70</div>
+      <div class="me" style="--x:195px;--y:271.7px"></div>
+      <div class="orb plenty sel" style="--x:169.3px;--y:223.4px"><span class="lab">Blk 135A · 2 min</span>236</div>
+
+      <div class="top">
+        <div class="search glass"><svg class="i"><use href="#i-search"/></svg><span>Where to?</span><button class="ib" aria-label="Settings"><svg class="i"><use href="#i-gear"/></svg></button></div>
+        <div class="chips">
+          <button class="chip glass on"><i class="dotc"></i>Near you · Teck Whye</button>
+          <button class="chip glass"><svg class="i"><use href="#i-home"/></svg>Home</button>
+          <button class="chip glass wx"><svg class="i"><use href="#i-rain"/></svg>28°</button>
+        </div>
+      </div>
+      <button class="fab glass" style="top:352px" aria-label="My location"><svg class="i lg"><use href="#i-locate"/></svg></button>
+
+      <section class="sheet glass" style="top:414px;bottom:150px">
+        <div class="handle"></div>
+        <div class="sh-head"><div><h2>14 carparks nearby</h2><p><i class="live"></i>Live · 1 min ago · 10 min walk</p></div></div>
+        <div class="ctrls">
+          <button class="ctl"><svg class="i"><use href="#i-sort"/></svg>Nearest</button>
+          <button class="ctl on"><svg class="i"><use href="#i-clock"/></svg>Stay 2 h</button>
+          <button class="ctl"><svg class="i"><use href="#i-sliders"/></svg>Filters</button>
+          <button class="ctl"><svg class="i"><use href="#i-roof"/></svg>Covered</button>
+        </div>
+        <ul class="rows">
+          <li class="row sel plenty">
+            <div class="ring"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="24"/><circle class="fg" cx="28" cy="28" r="24" stroke-dasharray="119 151"/></svg><b>236</b><small>free</small></div>
+            <div class="rt"><b>Blk 135A Teck Whye Ln</b>
+              <span class="meta">HDB · Multi-storey · <svg class="i"><use href="#i-walk"/></svg>2 min</span>
+              <span class="facts"><em class="ev"><svg class="i fill"><use href="#i-boltf"/></svg>3</em><em>Night</em><em class="warn">1.8 m</em></span></div>
+            <div class="cost"><b>$2.40</b><small>est. 2 h</small></div>
+          </li>
+          <li class="row plenty">
+            <div class="ring"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="24"/><circle class="fg" cx="28" cy="28" r="24" stroke-dasharray="62 151"/></svg><b>188</b><small>free</small></div>
+            <div class="rt"><b>Blk 109/117 Teck Whye Ln</b>
+              <span class="meta">HDB · Surface · <svg class="i"><use href="#i-walk"/></svg>2 min</span>
+              <span class="facts"><em class="ev"><svg class="i fill"><use href="#i-boltf"/></svg>6</em><em>Night</em><em>Free Sun/PH</em></span></div>
+            <div class="cost"><b>$2.40</b><small>est. 2 h</small></div>
+          </li>
+          <li class="row few">
+            <div class="ring"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="24"/><circle class="fg" cx="28" cy="28" r="24" stroke-dasharray="45 151"/></svg><b>3</b><small>free</small></div>
+            <div class="rt"><b>Blk 135–138, 141, 142 &amp; 145 Teck Whye Ln</b>
+              <span class="meta">HDB · Surface · <svg class="i"><use href="#i-walk"/></svg>2 min</span></div>
+            <div class="cost"><b>$2.40</b><small>est. 2 h</small></div>
+          </li>
+        </ul>
+      </section>
+
+      <nav class="nav glass">
+        <a class="on"><svg class="i"><use href="#i-park"/></svg>Parking</a>
+        <a><svg class="i"><use href="#i-bolt"/></svg></a>
+        <a><svg class="i"><use href="#i-cctv"/></svg></a>
+        <a><svg class="i"><use href="#i-rain"/></svg></a>
+      </nav>
+      <div class="ad"><b>AD</b>Adaptive banner · collapses when empty</div><div class="base"></div>
+    </div>
+  </div>
+  <figcaption><strong>1 · Parking: glowing orbs on a night map</strong>Each orb shows free car lots and its ring colour shows availability. The selected orb grows and labels itself. In the list, the ring gauge fills with free space and the number inside is free lots. The sheet and nav float on frosted glass so the map shows around them.</figcaption>
+</figure>
+
+<!-- ============ 2 · EV ============ -->
+<figure class="device">
+  <div class="phone" data-time="5:42">
+    <div class="scr">
+      <div class="map" style="background-image:var(--map-tw)"></div>
+      <div class="fade"></div>
+
+      <div class="orb ev plenty" style="--x:130.5px;--y:291.3px"><svg class="i fill"><use href="#i-boltf"/></svg>4/6</div>
+      <div class="orb ev plenty" style="--x:246.9px;--y:173.8px"><svg class="i fill"><use href="#i-boltf"/></svg>2/3</div>
+      <div class="orb ev few" style="--x:38.8px;--y:275.5px"><svg class="i fill"><use href="#i-boltf"/></svg>0/1</div>
+      <div class="orb ev plenty" style="--x:335.1px;--y:324.5px"><svg class="i fill"><use href="#i-boltf"/></svg>1/2</div>
+      <div class="orb ev none" style="--x:337px;--y:220.3px"><svg class="i fill"><use href="#i-boltf"/></svg>0/2</div>
+      <div class="me" style="--x:195px;--y:271.7px"></div>
+      <div class="orb ev plenty sel" style="--x:169.3px;--y:223.4px"><span class="lab">Charge+ · 7.4 kW</span><svg class="i fill"><use href="#i-boltf"/></svg>3/3</div>
+
+      <div class="top">
+        <div class="search glass"><svg class="i"><use href="#i-search"/></svg><span>Where to?</span><button class="ib" aria-label="Settings"><svg class="i"><use href="#i-gear"/></svg></button></div>
+        <div class="chips">
+          <button class="chip glass on"><i class="dotc"></i>Near you · Teck Whye</button>
+          <button class="chip glass"><svg class="i"><use href="#i-home"/></svg>Home</button>
+          <button class="chip glass wx"><svg class="i"><use href="#i-rain"/></svg>28°</button>
+        </div>
+      </div>
+      <button class="fab glass" style="top:352px" aria-label="My location"><svg class="i lg"><use href="#i-locate"/></svg></button>
+
+      <section class="sheet glass" style="top:414px;bottom:150px">
+        <div class="handle"></div>
+        <div class="sh-head"><div><h2>6 charging sites</h2><p><i class="live"></i>Live · 3 min ago · fits Type 2 · CCS2</p></div></div>
+        <div class="ctrls">
+          <button class="ctl on"><svg class="i"><use href="#i-plug"/></svg>My plugs</button>
+          <button class="ctl"><svg class="i"><use href="#i-check"/></svg>Free now</button>
+          <button class="ctl"><svg class="i"><use href="#i-bolt"/></svg>DC fast</button>
+          <button class="ctl"><svg class="i"><use href="#i-sliders"/></svg></button>
+        </div>
+        <ul class="rows">
+          <li class="row sel plenty">
+            <div class="ring"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="24"/><circle class="fg" cx="28" cy="28" r="24" stroke-dasharray="151 151"/></svg><b>3/3</b><small>free</small></div>
+            <div class="rt"><b>Blk 135A Teck Whye Ln</b>
+              <span class="meta">Charge+ · Level 1 · <svg class="i"><use href="#i-walk"/></svg>2 min</span>
+              <span class="facts"><em><svg class="i"><use href="#i-plug"/></svg>Type 2</em><em>7.4 kW AC</em><em>24 h</em></span></div>
+            <div class="cost"><b>$0.65</b><small>per kWh</small></div>
+          </li>
+          <li class="row plenty">
+            <div class="ring"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="24"/><circle class="fg" cx="28" cy="28" r="24" stroke-dasharray="100 151"/></svg><b>4/6</b><small>free</small></div>
+            <div class="rt"><b>Blk 109/117 Teck Whye Ln</b>
+              <span class="meta">Charge+ · Surface · <svg class="i"><use href="#i-walk"/></svg>2 min</span>
+              <span class="facts"><em><svg class="i"><use href="#i-plug"/></svg>Type 2</em><em>7.4 kW AC</em></span></div>
+            <div class="cost"><b>$0.65</b><small>per kWh</small></div>
+          </li>
+          <li class="row few">
+            <div class="ring"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="24"/><circle class="fg" cx="28" cy="28" r="24" stroke-dasharray="0 151"/></svg><b>0/1</b><small>in use</small></div>
+            <div class="rt"><b>Blk 118A Teck Whye Ln</b>
+              <span class="meta">SP Mobility · <svg class="i"><use href="#i-walk"/></svg>5 min</span>
+              <span class="facts"><em><svg class="i"><use href="#i-plug"/></svg>CCS2</em><em>50 kW DC</em></span></div>
+            <div class="cost"><b>$0.79</b><small>per kWh</small></div>
+          </li>
+        </ul>
+      </section>
+
+      <nav class="nav glass">
+        <a><svg class="i"><use href="#i-park"/></svg></a>
+        <a class="on"><svg class="i"><use href="#i-bolt"/></svg>EV</a>
+        <a><svg class="i"><use href="#i-cctv"/></svg></a>
+        <a><svg class="i"><use href="#i-rain"/></svg></a>
+      </nav>
+      <div class="ad"><b>AD</b>Adaptive banner · collapses when empty</div><div class="base"></div>
+    </div>
+  </div>
+  <figcaption><strong>2 · EV: same orbs, with a bolt</strong>Orbs switch to free / total connectors for your plugs; the selected one labels its operator and speed. Quick filters fit EV habits: My plugs (on by default), Free now, DC fast. Hide the EV tab in Settings if you drive petrol.</figcaption>
+</figure>
+
+<!-- ============ 3 · ROADS ============ -->
+<figure class="device">
+  <div class="phone" data-time="5:42">
+    <div class="scr">
+      <div class="map" style="background-image:var(--map-sg)"></div>
+      <div class="fade"></div>
+      <div class="top">
+        <div class="search glass"><svg class="i"><use href="#i-search"/></svg><span>Where to?</span><button class="ib" aria-label="Settings"><svg class="i"><use href="#i-gear"/></svg></button></div>
+      </div>
+
+      <section class="sheet glass" style="top:114px;bottom:22px;border-radius:28px 28px 0 0;left:0;right:0">
+        <div class="handle"></div>
+        <div class="sh-head"><div><h2>Live cameras</h2><p><i class="live"></i>All 8 LTA cameras · updated 5:36 pm</p></div></div>
+        <div class="grps">
+          <button class="on">Woodlands <small>14 min</small></button>
+          <button>Tuas <small>9 min</small></button>
+          <button>Sentosa</button>
+          <button><svg class="i sm"><use href="#i-map"/></svg></button>
+        </div>
+        <div class="stream"><div class="stream-in">
+          <div class="shot" style="background-image:url(assets/cams/2701.jpg)">
+            <div class="ov"><div><b>Woodlands Causeway</b><small>Towards Johor</small></div><span class="ts"><i class="live"></i>5:36</span></div>
+          </div>
+          <div class="shot" style="background-image:url(assets/cams/2702.jpg)">
+            <div class="ov"><div><b>Woodlands Checkpoint</b><small>Arrival and departure lanes</small></div><span class="ts"><i class="live"></i>5:36</span></div>
+          </div>
+          <div class="shot adshot"><div><span class="adl">AD</span>In-feed ad, same size as a camera image<small style="font-size:11.5px;color:var(--faint)">After the 2nd camera, scrolls under the nav</small></div></div>
+        </div></div>
+      </section>
+
+      <nav class="nav glass">
+        <a><svg class="i"><use href="#i-park"/></svg></a>
+        <a><svg class="i"><use href="#i-bolt"/></svg></a>
+        <a class="on"><svg class="i"><use href="#i-cctv"/></svg>Roads</a>
+        <a><svg class="i"><use href="#i-rain"/></svg></a>
+      </nav>
+      <div class="ad"><b>AD</b>Adaptive banner · collapses when empty</div><div class="base"></div>
+    </div>
+  </div>
+  <figcaption><strong>3 · Roads: full-width camera stream (scrolled)</strong>Big, edge-to-edge images with frosted captions, grouped Woodlands / Tuas / Sentosa (tap a group to jump). Each group chip carries LTA's travel time to that checkpoint. The in-feed ad comes after the second image, at the same size, and the feed scrolls under the floating nav.</figcaption>
+</figure>
+
+<!-- ============ 4 · WEATHER ============ -->
+<figure class="device">
+  <div class="phone" data-time="5:42">
+    <div class="scr">
+      <div class="map" style="background-image:var(--map-sg)"></div>
+      <img class="radar" src="assets/radar-1700.png" alt="">
+      <div class="fade"></div>
+      <div class="me" style="--x:140.7px;--y:291.3px"></div>
+
+      <div class="top">
+        <div class="search glass"><svg class="i"><use href="#i-search"/></svg><span>Where to?</span><button class="ib" aria-label="Settings"><svg class="i"><use href="#i-gear"/></svg></button></div>
+        <div class="chips">
+          <button class="chip glass on"><i class="dotc"></i>Near you · Teck Whye</button>
+          <button class="chip glass"><svg class="i"><use href="#i-home"/></svg>Home</button>
+          <button class="chip glass"><svg class="i"><use href="#i-work"/></svg>Work</button>
+        </div>
+      </div>
+      <div class="rctl glass" style="top:352px">
+        <button class="play" aria-label="Pause"><svg class="i"><use href="#i-pause"/></svg></button>
+        <div class="tl"><b>5:40 pm <span>Rain radar · last hour</span></b>
+          <div class="wave"><i class="p" style="height:30%"></i><i class="p" style="height:40%"></i><i class="p" style="height:35%"></i><i class="p" style="height:55%"></i><i class="p" style="height:60%"></i><i class="p" style="height:50%"></i><i class="p" style="height:70%"></i><i class="p" style="height:80%"></i><i class="p" style="height:75%"></i><i class="p" style="height:90%"></i><i class="p" style="height:85%"></i><i class="c" style="height:100%"></i></div>
+        </div>
+      </div>
+
+      <section class="sheet glass" style="top:416px;bottom:208px">
+        <div class="handle"></div>
+        <div class="wxh">
+          <span class="big">28°</span>
+          <div><h2>Light rain near you</h2><p>0.4 mm in 5 min · gauge 1.1 km</p></div>
+          <span class="ico"><svg class="i lg"><use href="#i-rain"/></svg></span>
+        </div>
+        <div class="nx"><svg class="i"><use href="#i-storm"/></svg><div><b>Thundery showers next 2 h</b><small>Choa Chu Kang · until 7:00 pm</small></div></div>
+        <div class="d4">
+          <div>Tue<svg class="i"><use href="#i-storm"/></svg><small>24–33°</small></div>
+          <div>Wed<svg class="i"><use href="#i-rain"/></svg><small>25–33°</small></div>
+          <div>Thu<svg class="i"><use href="#i-partsun"/></svg><small>25–34°</small></div>
+          <div>Fri<svg class="i"><use href="#i-storm"/></svg><small>24–32°</small></div>
+        </div>
+      </section>
+
+      <div class="parked glass">
+        <span class="pi">P</span>
+        <div class="tx"><b>Parked · Blk 135A Teck Whye</b><small>Deck 4B · est. $0.84 so far</small></div>
+        <span class="tm">42m</span>
+      </div>
+      <nav class="nav glass">
+        <a><svg class="i"><use href="#i-park"/></svg></a>
+        <a><svg class="i"><use href="#i-bolt"/></svg></a>
+        <a><svg class="i"><use href="#i-cctv"/></svg></a>
+        <a class="on"><svg class="i"><use href="#i-rain"/></svg>Weather</a>
+      </nav>
+      <div class="ad"><b>AD</b>Adaptive banner · collapses when empty</div><div class="base"></div>
+    </div>
+  </div>
+  <figcaption><strong>4 · Weather: radar glows over the night map</strong>Rain cells glow over the dark map, with a mini rain-intensity wave as the timeline. The glass card keeps it to three things: now (with temperature), next 2 hours, and four days. The <b>Parked</b> capsule floats above the nav on every tab.</figcaption>
+</figure>
+
+</main>
+
+<section class="notes">
+  <div class="note"><h2>What makes Night Drive different</h2><ul>
+    <li><strong>Dark-first</strong> navy map, kind to eyes in the car park at night; a bright light theme is derived from it.</li>
+    <li><strong>Ring gauges</strong> show how full a carpark is at a glance, with free lots inside.</li>
+    <li><strong>Floating glass</strong> sheet and pill nav (icon-only, active tab labelled) for a modern, premium feel.</li>
+  </ul></div>
+  <div class="note"><h2>Review changes included</h2><ul>
+    <li>Tabs: <strong>Parking · EV · Roads · Weather</strong> (EV shown with a bolt; only the active tab shows its name).</li>
+    <li>EV tab can be hidden in Settings.</li>
+    <li>All 8 cameras, with one in-feed ad after the 2nd image plus the bottom banner.</li>
+    <li>Lean Weather: now, 2 hours, 4 days.</li>
+  </ul></div>
+  <div class="note"><h2>Trade-offs</h2><ul>
+    <li>Glass blur is the costliest effect on low-end Android; needs a solid fallback.</li>
+    <li>Icon-only inactive tabs are less learnable than labelled tabs (could show all labels).</li>
+    <li>Glow must not be the only cue: ring colour + number + label carry the meaning.</li>
+  </ul></div>
+</section>
+<p class="disclaimer">Visual direction only. Map: © OpenFreeMap, © OpenMapTiles, data © OpenStreetMap contributors. Carpark lots are real HDB data (data.gov.sg) captured 26 Oct 2026. Camera images: LTA via data.gov.sg (26 Oct 2026, 5:36 pm). Radar: NEA (25 Oct 2026, 5:00 pm). EV chargers, prices, travel times, gauge reading and the parked session are sample data.</p>
+<script src="shared/chrome.js"></script>
+</body>
+</html>

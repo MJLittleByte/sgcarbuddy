@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en-SG">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{storeTitle}}</title>
+  <meta name="description" content="{{tagline}}">
+  <link rel="canonical" href="{{siteUrl}}">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <img src="icon.svg" alt="" width="44" height="44">
+    <a class="name" href="./">{{appName}}</a>
+    <nav aria-label="Site"><a href="./" aria-current="page">Home</a><a href="privacy/">Privacy</a></nav>
+  </header>
+
+  <main>
+    <h1>{{tagline}}</h1>
+    <p class="meta">A no-login Android app for Singapore drivers.</p>
+
+    <div class="card">
+      <ul class="features">
+        <li>Live free lots at HDB, URA and mall carparks near you or where you're going, with estimated parking cost</li>
+        <li>EV chargers with live connector status, plug types, power and price</li>
+        <li>Live LTA checkpoint cameras (Woodlands, Tuas, Sentosa) and road alerts near you</li>
+        <li>Rain radar, rain near you and the next 2 hours</li>
+        <li>Remember where you parked, with reminders before free parking ends or rates change</li>
+      </ul>
+    </div>
+
+    <h2>Privacy</h2>
+    <p>No account needed, and your location stays on your phone. The app is free; a future version may show ads to keep
+      it that way. Read the full <a href="privacy/">Privacy Policy</a>.</p>
+
+    <h2>Support</h2>
+    <p>Questions, wrong carpark details or feedback: <a href="mailto:{{contactEmail}}">{{contactEmail}}</a></p>
+  </main>
+
+  <footer class="site">
+    © {{year}} {{developerName}} · Data: LTA DataMall, HDB, URA, NEA and PUB via data.gov.sg, OneMap · Not affiliated with any
+    government agency.
+  </footer>
+</div>
+</body>
+</html>
