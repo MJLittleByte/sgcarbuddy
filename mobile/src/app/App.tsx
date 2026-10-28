@@ -735,7 +735,7 @@ function Main({ theme, tab, setTab, stack, setStack }: { theme: 'light' | 'dark'
           {tabs.map((t) => (
             <button
               key={t.id}
-              className={tab === t.id ? 'on' : ''}
+              className={`nav-${t.id}${tab === t.id ? ' on' : ''}`}
               aria-current={tab === t.id ? 'page' : undefined}
               onClick={() => {
                 setSelected(null);

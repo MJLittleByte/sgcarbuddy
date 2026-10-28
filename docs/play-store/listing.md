@@ -4,7 +4,26 @@
 |---|---|---|
 | App icon | `icon-512.png` | 512×512 PNG, full-bleed square (Play applies the rounded mask). `cd mobile && npm run brand` |
 | Feature graphic | `feature-graphic-1024x500.png` | 1024×500 PNG. `cd mobile && npm run store:graphic` |
-| Phone screenshots (upload in this order) | `screenshot-01-parking.png` … `screenshot-06-night.png` | 1080×1920 PNG, 9:16. `cd mobile && npm run store:screens` (take them in daylight; see the script header) |
+| Phone screenshots (upload in this order) | `screenshot-01-parking.png` … `screenshot-07-night.png` | 1080×1920 PNG, 9:16, captioned. `cd mobile && npm run store:screens` (in daylight; see the script header) |
+| Plain captures (no caption) | `raw/01-parking.png` … `raw/07-night.png` | 1080×1920 PNG; also valid for Play if you prefer screens without captions |
+
+## Screenshot captions (baked into the images)
+
+Captured 28 Oct 2026, 9 pm, live data (Clementi for parking, Orchard for EV; the Woodlands camera shows the evening jam), with the colour-coded Day tab bar. Edit the captions in `SCENES` in
+`mobile/scripts/store_assets.mjs`, then `npm run store:frame` re-captions without recapturing.
+
+| # | Screen | Caption |
+|---|---|---|
+| 01 | Parking map + list (Day) | Live free lots near you / HDB, URA and mall carparks, with the cost of your stay |
+| 02 | Carpark detail | Know before you drive in / Live lots, what you'll pay, height limit and chargers |
+| 03 | EV tab (Orchard, Type 2 + CCS2) | Find a free charger / Live status for your plug, with kW and price |
+| 04 | Roads: checkpoint cameras | Checkpoint jam? See it first / Live Woodlands, Tuas and Sentosa cameras, and road alerts near you |
+| 05 | Weather: radar, rain now, 2 hours, 4 days | Will it rain on you? / Rain radar, rain near you and the next 2 hours |
+| 06 | Parked car | Remember where you parked / Deck, lot, time and the cost so far, with reminders |
+| 07 | Parking (Night) with the parked-car bar | Easy on the eyes at night / Day and Night looks, switching automatically. No account needed. |
+
+The radar in 05 shows whatever NEA reported at capture time (almost no rain that morning). For a radar with rain in it,
+re-run `STORE_ONLY=05 npm run store:screens` during a shower.
 
 ## App name (max 30)
 

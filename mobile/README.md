@@ -78,5 +78,6 @@ npm run store:graphic      # Play feature graphic (offline)
 npm run store:screens      # Play screenshots from a local release-like build (see scripts/store_assets.mjs)
 ```
 
-Bump `androidVersionCode` in `package.json` for every Play upload (`version` is the name users see). Listing text,
+`android:apk` / `android:aab` run Gradle through `scripts/gradle.sh`, which picks a JDK 21+ (Capacitor 8 needs it) even when
+the shell's default Java is older. Bump `androidVersionCode` in `package.json` for every Play upload (`version` is the name users see). Listing text,
 Data safety answers and permission notes: `../docs/play-store/listing.md`. Privacy policy: `../site/`.

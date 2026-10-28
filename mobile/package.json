@@ -12,13 +12,14 @@
     "cap:sync": "npm run build && cap sync android",
     "android:open": "npm run cap:sync && cap open android",
     "android:run": "npm run cap:sync && cap run android",
-    "android:apk": "npm run cap:sync && cd android && ./gradlew assembleDebug",
+    "android:apk": "npm run cap:sync && bash scripts/gradle.sh assembleDebug",
     "brand": "node scripts/build_brand.mts && node scripts/render_icons.mjs",
     "android:keystore": "bash scripts/create-keystore.sh",
     "release:check": "node scripts/check-release.mjs",
-    "android:aab": "npm run release:check && npm run cap:sync && cd android && ./gradlew bundleRelease && echo \"\\nAAB: mobile/android/app/build/outputs/bundle/release/app-release.aab\"",
+    "android:aab": "npm run release:check && npm run cap:sync && bash scripts/gradle.sh bundleRelease && echo \"\\nAAB: mobile/android/app/build/outputs/bundle/release/app-release.aab\"",
     "store:graphic": "node scripts/store_assets.mjs --graphic",
-    "store:screens": "node scripts/store_assets.mjs --screens"
+    "store:screens": "node scripts/store_assets.mjs --screens",
+    "store:frame": "node scripts/store_assets.mjs --frame"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",

@@ -888,6 +888,66 @@ a {
 :root[data-theme='dark'] .nav button.on .nav-ind {
   box-shadow: 0 0 18px rgba(75, 227, 255, 0.35);
 }
+/*
+ * Day: every tab has its own colour (Google-style), so the bar is never grey. The active tab gets a gradient pill
+ * with a white icon that pops in, and its label takes the tab colour (all ≥ 4.5:1 on white).
+ */
+.nav-parking {
+  --tab: #1a56db;
+  --tab-2: #4f86ff;
+}
+.nav-ev {
+  --tab: #0a7a43;
+  --tab-2: #2fbf71;
+}
+.nav-roads {
+  --tab: #b45309;
+  --tab-2: #f59e0b;
+}
+.nav-weather {
+  --tab: #0369a1;
+  --tab-2: #38bdf8;
+}
+:root:not([data-theme='dark']) .nav {
+  border-top: 0;
+  background: var(--surface);
+  box-shadow:
+    0 -1px 0 var(--line),
+    0 -8px 20px rgba(16, 24, 40, 0.06);
+}
+:root:not([data-theme='dark']) .nav button {
+  color: var(--muted);
+}
+:root:not([data-theme='dark']) .nav .nav-ind {
+  width: 60px;
+  height: 32px;
+  border-radius: 16px;
+  color: var(--tab);
+}
+:root:not([data-theme='dark']) .nav button:not(.on) .nav-ind {
+  background: color-mix(in srgb, var(--tab) 9%, transparent);
+}
+:root:not([data-theme='dark']) .nav button.on {
+  color: var(--tab);
+  font-weight: 800;
+}
+:root:not([data-theme='dark']) .nav button.on .nav-ind {
+  background: linear-gradient(135deg, var(--tab-2), var(--tab));
+  color: #fff;
+  box-shadow: 0 5px 14px color-mix(in srgb, var(--tab) 38%, transparent);
+  animation: nav-pop 0.32s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+@keyframes nav-pop {
+  from {
+    transform: scale(0.72);
+    opacity: 0.5;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-theme='dark']) .nav button.on .nav-ind {
+    animation: none;
+  }
+}
 .ad-slot {
   position: relative;
   height: 50px;
